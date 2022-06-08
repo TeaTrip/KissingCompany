@@ -1,18 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <v-app>
+    <v-main>
+      <auth v-if="userType == 0" @login="switchView($event)"/>
+      <pimp v-if="userType == 1" />
+      <hooker v-if="userType == 2" />
+      <user v-if="userType == 3" />
+    </v-main>
+  </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import auth from './components/auth.vue';
+import pimp from '@/components/pimpView/pimp.vue';
+import hooker from '@/components/hookerView/hooker.vue';
+import user from '@/components/userView/user.vue';
+
+
+export enum IUserType{
+  auth = 0,
+  pimp = 1,
+  hooker = 2,
+  user = 3
+}
 
 export default Vue.extend({
   name: 'App',
+
   components: {
-    HelloWorld
+    auth,
+    pimp,
+    hooker,
+    user
+  },
+
+  data: () => ({
+    userType: 0,
+  }),
+  methods: {
+    switchView(e: any){
+      this.userType = e.userType;
+    }
   }
 });
 </script>
@@ -24,6 +52,6 @@ export default Vue.extend({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  max-width: 479px;
 }
 </style>
