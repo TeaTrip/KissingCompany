@@ -10,13 +10,12 @@
           md="12"
         >
             <v-img
-              :src="src"
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="200px"
               
             >
-              <v-card-title v-text="title"></v-card-title>
+              <v-card-title v-text="'asd'"></v-card-title>
             </v-img>
         </v-col>
         <v-col
@@ -24,7 +23,7 @@
           md="12"
         >
           <v-text-field
-            v-model="title"
+
             :rules="nameRules"
             :counter="10"
             label="Имя"
@@ -198,10 +197,6 @@
   export default Vue.extend({
     name: 'userDefka',
 
-    props: {
-      src: String,
-      title: String,
-    },
 
     data: () => ({
 			dialog: false,
@@ -210,7 +205,6 @@
       lastname: '',
       nameRules: [
         (v: any) => !!v || 'Name is required',
-        (v: any) => v.length <= 10 || 'Name must be less than 10 characters',
       ],
       email: '',
       emailRules: [
@@ -254,7 +248,6 @@
 				this.$emit('login', {userType: 0, token: 'blablabla'})
 			},
             mounted(){
-                console.log(this.src, this.title);
             }
 		},
 		

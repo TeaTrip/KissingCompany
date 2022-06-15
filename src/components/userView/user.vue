@@ -53,7 +53,7 @@
 		</div>
 		<v-container fill-height fluid class="pimp__content">
 			<user-all-defki v-if="activePage == 1" @openDefka="open($event)"/>
-      <user-defka v-if="activePage == 10" :props="defkaProps" />
+      <user-defka v-if="activePage == 10" />
 			<hooker-schedule v-if="activePage == 2" />
       <hooker-service-history v-if="activePage == 3"/>
 		</v-container>
@@ -95,7 +95,7 @@
         this.defkaProps = {src: e.src, title: e.title};
         this.activePage = 10;
         console.log(e, e.src, e.title);
-      }
+        console.log('something')}
     }
   })
 </script>
