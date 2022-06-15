@@ -5,6 +5,7 @@
       <pimp v-if="userType == 1" />
       <hooker v-if="userType == 2" />
       <user v-if="userType == 3" />
+      <hooker-registration v-if="userType == 5" @login="switchView($event)" />
     </v-main>
   </v-app>
 </template>
@@ -15,6 +16,7 @@ import auth from './components/auth.vue';
 import pimp from '@/components/pimpView/pimp.vue';
 import hooker from '@/components/hookerView/hooker.vue';
 import user from '@/components/userView/user.vue';
+import hookerRegistration from './components/hookerView/hooker-registration.vue';
 
 
 export enum IUserType{
@@ -31,7 +33,8 @@ export default Vue.extend({
     auth,
     pimp,
     hooker,
-    user
+    user,
+    hookerRegistration
   },
 
   data: () => ({

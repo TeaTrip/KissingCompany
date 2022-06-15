@@ -29,7 +29,18 @@
       authorize(){
         console.log('login');
         //здесь должен быть запрос на авторизацию
-        this.$emit('login', {userType: 1, token: 'blablabla'})
+        if(this.login == '1'){
+          this.$emit('login', {userType: 1, token: 'blablabla'})
+        }
+        if(this.login == '2'){
+          this.$emit('login', {userType: 2, token: 'blablabla'})
+        }
+        if(this.login == '3'){
+          this.$emit('login', {userType: 3, token: 'blablabla'})
+        }
+        if(this.login == '5'){
+          this.$emit('login', {userType: 5, token: 'blablabla'})
+        }
       }
     }
   })
