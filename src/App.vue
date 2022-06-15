@@ -5,7 +5,7 @@
       <pimp v-if="userType == 1" />
       <hooker v-if="userType == 2" />
       <user v-if="userType == 3" />
-      <hooker-registration v-if="userType == 5" @login="switchView($event)" />
+      <hooker-registration v-if="userType == 4" @login="switchView($event)" />
     </v-main>
   </v-app>
 </template>

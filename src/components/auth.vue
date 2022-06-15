@@ -39,7 +39,7 @@
           this.$emit('login', {userType: 3, token: 'blablabla'})
         }
         if(this.login == '5'){
-          this.$emit('login', {userType: 5, token: 'blablabla'})
+          this.$emit('login', {userType: 4, token: 'blablabla'})
         }
       }
     }
