@@ -39,7 +39,7 @@
             <v-list-item-title>Все дефки</v-list-item-title>
             </v-list-item>
 
-            <v-list-item @click="selectMenuItem(3)">
+            <v-list-item @click="selectMenuItem(2)">
             <v-list-item-icon>
                 <v-icon>mdi-clipboard-text-clock</v-icon>
             </v-list-item-icon>
@@ -54,8 +54,7 @@
 		<v-container fill-height fluid class="pimp__content">
 			<user-all-defki v-if="activePage == 1" @openDefka="open($event)"/>
       <user-defka v-if="activePage == 10" />
-			<hooker-schedule v-if="activePage == 2" />
-      <hooker-service-history v-if="activePage == 3"/>
+			<user-history v-if="activePage == 2" />
 		</v-container>
     </div>
 </template>
@@ -66,7 +65,8 @@
   import hookerSchedule from '../hookerView/hooker-schedule.vue';
   import hookerServiceHistory from '../hookerView/hooker-service-history.vue';
   import userAllDefki from './user-all-defki.vue';
-  import userDefka from './user-defka.vue'
+  import userDefka from './user-defka.vue';
+  import userHistory from './user-history.vue';
 
   export default Vue.extend({
     name: 'user',
@@ -74,10 +74,10 @@
 		components: {
     hookerMyPage,
     hookerSchedule,
-    hookerServiceHistory,
+    userHistory,
     userAllDefki,
     userDefka,
-  },
+},
 
     data: () => ({
         drawer: false,

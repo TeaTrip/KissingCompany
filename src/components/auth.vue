@@ -12,7 +12,8 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
 
   export default Vue.extend({
     name: 'auth',
@@ -22,12 +23,14 @@
         (value: any) => !!value || 'Необходимое поле.',
         (value: any) => (value && value.length >= 3) || 'Минимум 5 символов',
       ],
-      password: '',
+      password: '20ed94cf-5ba6-46b2-b249-28d6c809c4d7',
       login: '',
     }),
     methods: {
-      authorize(){
-        console.log('login');
+      async authorize(){
+        // console.log('login');
+        // const res = await kissApi.login({username:'user', password: this.password})
+        // console.log(res);
         //здесь должен быть запрос на авторизацию
         if(this.login == '1'){
           this.$emit('login', {userType: 1, token: 'blablabla'})

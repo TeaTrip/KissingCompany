@@ -30,7 +30,7 @@
                     text
                     @click="register()"
                 >
-                    Зарегестрироваться
+                    Зарегистрироваться
                 </v-btn>
             </v-card-actions>
         </v-card>

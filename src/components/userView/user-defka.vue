@@ -1,9 +1,7 @@
 <template>
   <div>
-    <v-form v-model="valid">
-    <v-container>
-    	<p>Общая информация</p>
-			<v-divider></v-divider>
+	<h1 v-if="accept">Успешно!</h1>
+    <v-container v-else>
       <v-row>
         <v-col
           cols="12"
@@ -13,181 +11,139 @@
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="200px"
-              
+              src="https://southpark.cc-fan.tv/characters/14.jpg"
             >
-              <v-card-title v-text="'asd'"></v-card-title>
+              <v-card-title v-text="'Шелли марш'"></v-card-title>
             </v-img>
+			<h1>
+				4.5/5
+			</h1>
         </v-col>
-        <v-col
+		<v-col
           cols="12"
           md="12"
         >
-          <v-text-field
+			<v-card
+			class="d-flex justify-space-around mb-6"
+			flat
+			tile
+			>
+			<h1>Возраст:</h1>
+			<h1>7</h1>
+			</v-card>
+			<v-card
+			class="d-flex justify-space-around mb-6"
+			flat
+			tile
+			>
+			<h1>Рост:</h1>
+			<h1>120</h1>
+			</v-card>
+			<v-card
+			class="d-flex justify-space-around mb-6"
+			flat
+			tile
+			>
+			<h1>Цвет волос:</h1>
+			<h1>Шатенка</h1>
+			</v-card>
+		</v-col>
 
-            :rules="nameRules"
-            :counter="10"
-            label="Имя"
-            required
-          ></v-text-field>
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="12"
-        >
-          <v-text-field
-            v-model="lastname"
-            :rules="nameRules"
-            :counter="10"
-            label="Фамилия"
-            required
-          ></v-text-field>
-        </v-col>
-
-				<v-col
-          cols="12"
-          md="12"
-        >
-          <v-text-field
-            label="Возраст"
-            required
-          ></v-text-field>
-        </v-col>
-
-				<v-col
+		<v-col
           cols="12"
           md="12"
         >
           <v-textarea
+		  	v-model="description"
             label="Описание"
-            required
+			readonly
           ></v-textarea>
         </v-col>
 
-        <v-col
-          cols="12"
-          md="12"
-        >
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
-        </v-col>
+		<v-col cols="12" md="12">
+			<p>Предоставляемые услуги</p>
+			<v-divider></v-divider>
+		</v-col>
 
-				<v-col cols="12" md="12">
-					<p>Предоставляемые услуги</p>
-					<v-divider></v-divider>
-				</v-col>
+		<v-col cols="12" md="12">
+			<v-checkbox
+				v-model="kissWithTongue"
+				label="Поцелуй (с языком)"
+				color="primary"
+				value="primary"
+				hide-details
+			></v-checkbox>
+		</v-col>
 
-				<v-col cols="12" md="12">
-					<v-checkbox
-						v-model="selectAll"
-						label="Выбрать все"
-						color="primary"
-						value="primary"
-						hide-details
-					></v-checkbox>
-				</v-col>
+		<v-col cols="12" md="12">
+			<v-checkbox
+				v-model="kissLight"
+				label="Поцелуй (в щёку)"
+				color="primary"
+				value="primary"
+				hide-details
+			></v-checkbox>
+		</v-col>
 
-				<v-col cols="12" md="12">
-					<v-checkbox
-						v-model="kissWithTongue"
-						label="Поцелуй (с языком)"
-						color="primary"
-						value="primary"
-						hide-details
-					></v-checkbox>
-				</v-col>
+		<v-col cols="12" md="12">
+			<v-checkbox
+				v-model="hugs"
+				label="Объятия"
+				color="primary"
+				value="primary"
+				hide-details
+			></v-checkbox>
+		</v-col>
 
-				<v-col cols="12" md="12">
-					<v-checkbox
-						v-model="kissLight"
-						label="Поцелуй (в щёку)"
-						color="primary"
-						value="primary"
-						hide-details
-					></v-checkbox>
-				</v-col>
-
-				<v-col cols="12" md="12">
-					<v-checkbox
-						v-model="hugs"
-						label="Объятия"
-						color="primary"
-						value="primary"
-						hide-details
-					></v-checkbox>
-				</v-col>
-
-				<v-col cols="12" md="12" v-for="service in customService">
-						<div class="hooker-registration__new-service">
-							<v-checkbox
-								v-model="service.enabled"
-								color="primary"
-								value="primary"
-								hide-details
-							></v-checkbox>
-							<v-text-field
-								v-model="service.name"
-								:disabled="!service.enabled"
-								label="Название услуги"
-							></v-text-field>
-							<v-text-field
-								v-model="service.price"
-								:disabled="!service.enabled"
-								label="Цена"
-							></v-text-field>
-						</div>
-				</v-col>
-				<v-col cols="12" md="12">
-					<div class="hooker-registration__buttons">
-						<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="addNewService()">Добавить свою услугу</v-btn>
-					</div>
-				</v-col>
-
-				<v-col cols="12" md="12">
-					<p>Фотографии</p>
-					<v-divider></v-divider>
-				</v-col>
-
-				<v-col cols="12" md="12">
-					<v-file-input
-						v-model="photos"
-						accept="image/*"
-						label="Добавьте несколько фотографий"
-						multiple
-						filled
-						prepend-icon="mdi-camera"
-					></v-file-input>
-				</v-col>
-
-				<v-col v-if="photos.length > 1" cols="4" v-for="url in urlPhotos" class="d-flex child-flex">
-					<v-img :src="url.string" aspect-ratio="1" class="grey lighten-2">
-						<template v-slot:placeholder>
-						<v-row
-							class="fill-height ma-0"
-							align="center"
-							justify="center"
-						>
-							<v-progress-circular
-								indeterminate
-								color="grey lighten-5"
-							></v-progress-circular>
-						</v-row>
-					</template>
-					</v-img>	
-				</v-col>
-
-				<v-col cols="12" md="12">
-					<div class="hooker-registration__buttons">
-						<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="dialog = true">Завершить регистрацию</v-btn>
-					</div>
-				</v-col>
+		<v-col cols="12" md="12">
+			<div class="hooker-registration__buttons">
+				<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="addNewService()">Выбрать время</v-btn>
+			</div>
+		</v-col>
       </v-row>
+	  <v-dialog
+        v-model="dialog"
+        max-width="290"
+        >
+		
+        <v-card>
+            <v-card-title class="text-h5">
+            Выберите дату
+            </v-card-title>
+            <v-spacer></v-spacer>
+			<v-date-picker
+				v-model="date"
+				class="mt-4"
+				min="2022-06-22"
+			></v-date-picker>
+            <v-card-actions justify="center">
+                <v-btn
+                    color="error"
+                    text
+                    @click="dialog = false"
+                >
+                    ОК
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+		</v-dialog>
+		<v-col v-if="date" cols="12" md="12">
+			<v-col
+				class="d-flex"
+				cols="12"
+			>
+				<v-select
+				:items="items"
+				label="Свободное время"
+				></v-select>
+			</v-col>
+		</v-col>
+		<v-col v-if="date" cols="12" md="12">
+			<div class="hooker-registration__buttons">
+				<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="accept = true">Подтвердить</v-btn>
+			</div>
+		</v-col>
     </v-container>
-  </v-form>
   </div>
 </template>
 
@@ -199,10 +155,14 @@
 
 
     data: () => ({
-			dialog: false,
+		accept: false,
+		date: '',
+		dialog: false,
       valid: false,
       firstname: '',
-      lastname: '',
+      lastname: '7',
+	  description: 'Люблю крепко обниматься и долго целоваться!!!!',
+	  items: ['15:00', '17:00', '19:00', '20:00'],
       nameRules: [
         (v: any) => !!v || 'Name is required',
       ],
@@ -227,11 +187,7 @@
 
 		methods: {
 			addNewService(){
-				this.customService.push({
-				enabled: false,
-				name: '',
-				price: '',
-				});
+				this.dialog = true;
 			},
 			logFiles(){
 				console.log(this.photos);

@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <v-main>
-      <auth v-if="userType == 0" @login="switchView($event)"/>
+      <!-- <auth v-if="userType == 0" @login="switchView($event)"/>
       <pimp v-if="userType == 1" />
       <hooker v-if="userType == 2" />
-      <user v-if="userType == 3" />
-      <hooker-registration v-if="userType == 4" @login="switchView($event)" />
+      <user v-if="userType == 3" /> -->
+      <hooker-registration  @login="switchView($event)" />
     </v-main>
   </v-app>
 </template>
