@@ -2,11 +2,12 @@
   <v-app>
     <meta name="viewport" content="orientation=portrait, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <v-main>
-      <auth v-if="userType == 0" @login="switchView($event)"/>
+      <router-view></router-view>
+      <!-- <auth v-if="userType == 0" @login="switchView($event)"/>
       <pimp v-if="userType == 1" @logout="logout()"/>
       <hooker v-if="userType == 2" @logout="logout()" />
       <user v-if="userType == 3" @logout="logout()" />
-      <hooker-registration v-if="userType == 4"  @login="switchView($event)" />
+      <hooker-registration v-if="userType == 4"  @login="switchView($event)" /> -->
     </v-main>
   </v-app>
 </template>

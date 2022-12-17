@@ -68,7 +68,11 @@ import { kissApi } from '@/api/authApi/kissApi';
 						password: user.password
 					},
 				}
+			
 				kissApi.setNewConfig(newConfig);
+
+				const response2 = await kissApi.getKissApi().getAllDefki();
+			}
 		}
 	})
   </script>
