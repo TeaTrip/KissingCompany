@@ -188,9 +188,11 @@ import Vue from 'vue'
 
       }
     },
-    mounted() {
+    async mounted() {
       console.log('API CALL');
-      console.log(kissApi.getAllDefki());
+      const res = await kissApi.getAllDefki();
+      const obj = res.map(defka => ({title: defka.user.fname + ' ' + defka.user.sname, src: defka.telephone, flex:6}))
+      this.cards = obj;
     }
   })
 </script>

@@ -143,16 +143,21 @@
 				<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="accept = true">Подтвердить</v-btn>
 			</div>
 		</v-col>
+		<comments />
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
   import Vue from 'vue'
+  import comments from  '@/components/userView/comments/comments.vue';
 
   export default Vue.extend({
     name: 'userDefka',
 
+	components: {
+		comments
+	},
 
     data: () => ({
 		accept: false,

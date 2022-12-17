@@ -19,6 +19,15 @@
                     <v-spacer></v-spacer>
                     <v-card-subtitle>Место:  {{item.place}}</v-card-subtitle>
                     <v-card-subtitle>Дефка:  {{item.service}}</v-card-subtitle>
+                    <v-card-actions>
+                      <v-btn
+                        outlined
+                        rounded
+                        text
+                      >
+                        Оставить отзыв
+                      </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>

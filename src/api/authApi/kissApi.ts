@@ -19,8 +19,26 @@ export class KissApi extends Api {
     return users;
   }
 
+  public async addDefka(data: any): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/girls', data).catch((error: AxiosError) => { throw error });
+    let defka: any[] = response.data;
+    return defka;
+  }
+
+  public async addUser(data: any): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/user', data).catch((error: AxiosError) => { throw error });
+    let defka: any[] = response.data;
+    return defka;
+  }
+
   public async login(data: any): Promise<any[]> {
-    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/private',data).catch((error: AxiosError) => { throw error });
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/login',data).catch((error: AxiosError) => { throw error });
+    let users: any[] = response.data;
+    return users;
+  }
+
+  public async registration(data: any): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/registration',data).catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
     return users;
   }

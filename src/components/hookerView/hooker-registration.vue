@@ -81,6 +81,7 @@
           md="12"
         >
           <v-text-field
+		  	v-model="age"
             label="Возраст"
             required
           ></v-text-field>
@@ -105,6 +106,16 @@
             :rules="emailRules"
             label="E-mail"
             required
+          ></v-text-field>
+        </v-col>
+
+		 <v-col
+          cols="12"
+          md="12"
+        >
+          <v-text-field
+            v-model="photoLink"
+            label="Ссылка на фотографию"
           ></v-text-field>
         </v-col>
 
@@ -227,12 +238,15 @@
   import Vue from 'vue'
   import validationMixin from '@/plugins/vuetify'
 import { register } from 'register-service-worker';
+import { kissApi } from '@/api/authApi/kissApi';
 
   export default Vue.extend({
     name: 'hookerRegistration',
 
     data: () => ({
-			dialog: false,
+		photoLink: '',
+		age: '',
+		dialog: false,
       valid: false,
       firstname: '',
       lastname: '',
@@ -276,10 +290,42 @@ import { register } from 'register-service-worker';
 					this.urlPhotos.push({string: imageUrl});
 				})
 			},
-			register(){
+			async register(){
 				// api register call
+				const name = 'login' + this.firstname;
+
+				const objToSendUser = {
+					username: name,
+					fname: this.firstname,
+					sname: this.lastname,
+					password: "123",
+					role: {
+						id: 2
+					}
+				}
+
+				await kissApi.addUser(objToSendUser);
+
+				const objToSendDefka = {
+					user: {
+						username: name,
+						role: {
+						id: 2,
+						name: "Дефка"
+						}
+					},
+					location: "spb",
+					age: this.age,
+					height: 181,
+					weight: 67,
+					nation: "nigger",
+					telephone: this.photoLink,
+					hair_color: "w"
+				}
+
+				await kissApi.addDefka(objToSendDefka);
 				this.dialog = false;
-				this.$emit('login', {userType: 0, token: 'blablabla'})
+				this.$emit('login', {userType: 2, token: 'blablabla'})
 			}
 		},
 		

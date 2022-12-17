@@ -1,11 +1,12 @@
 <template>
   <v-app>
+    <meta name="viewport" content="orientation=portrait, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <v-main>
-      <!-- <auth v-if="userType == 0" @login="switchView($event)"/>
+      <auth v-if="userType == 0" @login="switchView($event)"/>
       <pimp v-if="userType == 1" />
       <hooker v-if="userType == 2" />
-      <user v-if="userType == 3" /> -->
-      <hooker-registration  @login="switchView($event)" />
+      <user v-if="userType == 3" />
+      <hooker-registration v-if="userType == 4"  @login="switchView($event)" />
     </v-main>
   </v-app>
 </template>
@@ -40,10 +41,24 @@ export default Vue.extend({
   data: () => ({
     userType: 0,
   }),
+  created: () => {
+
+  },
+  mounted: () => {
+    screen.orientation.lock("portrait");
+    
+    window.addEventListener("orientationchange", function() {
+      // Prevent orientation change
+      if (screen.orientation.angle !== 0) {
+        screen.orientation.lock("portrait");
+      }
+    });
+  },
   methods: {
     switchView(e: any){
       this.userType = e.userType;
-    }
+    },
+    
   }
 });
 </script>

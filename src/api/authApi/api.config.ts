@@ -14,7 +14,7 @@ export const apiConfig = {
       'Access-Control-Allow-Origin': '*',
       Pragma: "no-cache",
       "Content-Type": "application/json",
-      Accept: "application/json",
+      Accept: "application/json", 
     },
   },
   paramsSerializer: (params: PathLike) => qs.stringify(params, { indices: false }),
