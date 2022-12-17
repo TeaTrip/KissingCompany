@@ -164,8 +164,8 @@
 					></v-checkbox>
 				</v-col>
 
-				<v-col cols="12" md="12" v-for="service in customService">
-						<div class="hooker-registration__new-service">
+				<v-col cols="12" md="12" :key="index" v-for="(index, service) in customService">
+						<div  class="hooker-registration__new-service">
 							<v-checkbox
 								v-model="service.enabled"
 								color="primary"
@@ -205,23 +205,24 @@
 						prepend-icon="mdi-camera"
 					></v-file-input>
 				</v-col>
-
-				<v-col v-if="photos.length > 1" cols="4" v-for="url in urlPhotos" class="d-flex child-flex">
-					<v-img :src="url.string" aspect-ratio="1" class="grey lighten-2">
-						<template v-slot:placeholder>
-						<v-row
-							class="fill-height ma-0"
-							align="center"
-							justify="center"
-						>
-							<v-progress-circular
-								indeterminate
-								color="grey lighten-5"
-							></v-progress-circular>
-						</v-row>
-					</template>
-					</v-img>	
-				</v-col>
+				<template v-if="photos.length > 1">
+					<v-col   :key="index" cols="4" v-for="(index, url) in urlPhotos" class="d-flex child-flex">
+						<v-img :src="url.string" aspect-ratio="1" class="grey lighten-2">
+							<template v-slot:placeholder>
+							<v-row
+								class="fill-height ma-0"
+								align="center"
+								justify="center"
+							>
+								<v-progress-circular
+									indeterminate
+									color="grey lighten-5"
+								></v-progress-circular>
+							</v-row>
+						</template>
+						</v-img>	
+					</v-col>
+				</template>
 
 				<v-col cols="12" md="12">
 					<div class="hooker-registration__buttons">
@@ -304,7 +305,7 @@ import { kissApi } from '@/api/authApi/kissApi';
 					}
 				}
 
-				await kissApi.addUser(objToSendUser);
+				await kissApi.getKissApi().addUser(objToSendUser);
 
 				const objToSendDefka = {
 					user: {
@@ -323,7 +324,7 @@ import { kissApi } from '@/api/authApi/kissApi';
 					hair_color: "w"
 				}
 
-				await kissApi.addDefka(objToSendDefka);
+				await kissApi.getKissApi().addDefka(objToSendDefka);
 				this.dialog = false;
 				this.$emit('login', {userType: 2, token: 'blablabla'})
 			}

@@ -31,17 +31,39 @@ export class KissApi extends Api {
     return defka;
   }
 
-  public async login(data: any): Promise<any[]> {
+  public async login(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/login',data).catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
     return users;
   }
 
-  public async registration(data: any): Promise<any[]> {
+  public async registration(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/registration',data).catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
     return users;
   }
 }
 
-export const kissApi = new KissApi(apiConfig as any)
+export class KissApiInstance {
+  private kissApi: KissApi;
+  private defaultConfig: any;
+  constructor(config: any){
+    this.kissApi = new KissApi(config);
+    this.defaultConfig = config;
+  }
+
+  public getKissApi(): KissApi {
+    return this.kissApi;
+  }
+
+  public setNewConfig(config: any) {
+    this.kissApi = new KissApi(config);
+  }
+
+  public logout(){
+    window.localStorage.removeItem('auth');
+    this.kissApi = new KissApi(this.defaultConfig);
+  }
+}
+
+export const kissApi = new KissApiInstance(apiConfig as any);

@@ -1,7 +1,8 @@
 import * as qs from "qs";
 import { PathLike } from "fs";
 
-export const API_BASE_URL = "http://localhost:1232/";
+export const API_BASE_URL = "http://localhost:1232/api/";
+//export const API_BASE_URL = "http://192.168.1.33:3233/api/";
 
 export const apiConfig = {
   returnRejectedPromiseOnError: true,

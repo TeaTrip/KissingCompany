@@ -25,7 +25,8 @@
   </template>
   
   <script lang="ts">
-  import { kissApi } from '@/api/authApi/kissApi';
+  import { apiConfig } from '@/api/authApi/api.config';
+import { kissApi } from '@/api/authApi/kissApi';
   import Vue from 'vue'
 	export default Vue.extend({
 		name: 'registration',
@@ -47,27 +48,27 @@
 					first_name: this.name,
 					second_name: this.lastName,
 					password: this.password,
-					role: "Пользователь"
+					role: "USER"
 				}
-				const response = kissApi.registration(user);
-				console.log(response);
-				// console.log('login');
-				// const res = await kissApi.login({username:'user', password: this.password})
-				// console.log(res);
-				//здесь должен быть запрос на авторизацию
-				// if(this.login == '1'){
-				// 	this.$emit('login', {userType: 1, token: 'blablabla'})
-				// }
-				// if(this.login == '2'){
-				// 	this.$emit('login', {userType: 2, token: 'blablabla'})
-				// }
-				// if(this.login == '3'){
-				// 	this.$emit('login', {userType: 3, token: 'blablabla'})
-				// }
-				// if(this.login == '4'){
-				// 	this.$emit('login', {userType: 4, token: 'blablabla'})
-				// }
-			}
+				const response = await kissApi.getKissApi().registration(user);
+				if(response.error){
+					console.log('something going wrong');
+					return;
+				}
+
+				window.localStorage.setItem('auth', JSON.stringify({
+						username: user.username,
+						password: user.password
+					}));
+				
+				const newConfig = {
+					...apiConfig,
+					auth: {
+						username: user.username,
+						password: user.password
+					},
+				}
+				kissApi.setNewConfig(newConfig);
 		}
 	})
   </script>

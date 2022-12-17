@@ -53,6 +53,13 @@
             <v-list-item-title>История записей</v-list-item-title>
             </v-list-item>
 
+            <v-list-item @click="$emit('logout')">
+            <v-list-item-icon>
+                <v-icon>mdi-exit-run</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Выйти</v-list-item-title>
+            </v-list-item>
+
         </v-list-item-group>
         </v-list>
     </v-navigation-drawer>

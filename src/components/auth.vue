@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-  import { kissApi } from '@/api/authApi/kissApi';
+  import { apiConfig } from '@/api/authApi/api.config';
+import { kissApi } from '@/api/authApi/kissApi';
   import registration from '@/components/registration.vue'
 import Vue from 'vue'
 
@@ -33,27 +34,45 @@ import Vue from 'vue'
         (value: any) => !!value || 'Необходимое поле.',
         (value: any) => (value && value.length >= 3) || 'Минимум 5 символов',
       ],
-      password: '20ed94cf-5ba6-46b2-b249-28d6c809c4d7',
+      password: '',
       login: '',
       isRegistration: false,
     }),
     methods: {
       async authorize(){
-        // console.log('login');
-        // const res = await kissApi.login({username:'user', password: this.password})
-        // console.log(res);
-        //здесь должен быть запрос на авторизацию
-        if(this.login == '1'){
-          this.$emit('login', {userType: 1, token: 'blablabla'})
+        const credential = {
+          username: this.login,
+          password: this.password,
         }
-        if(this.login == '2'){
-          this.$emit('login', {userType: 2, token: 'blablabla'})
+        
+        const response = await kissApi.getKissApi().login(credential);
+        if(response.role){
+          const newConfig = {
+					...apiConfig,
+            auth: {
+              ...credential
+            },
+          }
+			
+				  kissApi.setNewConfig(newConfig);
+
+          window.localStorage.setItem('auth', JSON.stringify(credential));
+
+          const role = response.role.name
+          if(role === "USER"){
+            this.$emit('login', {userType: 3})
+          }
+          if(role === "HOOKER"){
+            this.$emit('login', {userType: 2})
+          }
+          if(role === "ADMIN"){
+            this.$emit('login', {userType: 1})
+          }
+
+          return;
         }
-        if(this.login == '3'){
-          this.$emit('login', {userType: 3, token: 'blablabla'})
-        }
-        if(this.login == '4'){
-          this.$emit('login', {userType: 4, token: 'blablabla'})
+        else {
+          console.log('something went wrog');
         }
       }
     }

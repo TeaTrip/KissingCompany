@@ -46,6 +46,13 @@
             <v-list-item-title>История заказов</v-list-item-title>
             </v-list-item>
 
+            <v-list-item @click="$emit('logout')">
+            <v-list-item-icon>
+                <v-icon>mdi-exit-run</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Выйти</v-list-item-title>
+            </v-list-item>
+
         </v-list-item-group>
         </v-list>
     </v-navigation-drawer>
@@ -60,7 +67,8 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
 	import hookerMyPage from '../hookerView/hooker-my-page.vue';
   import hookerSchedule from '../hookerView/hooker-schedule.vue';
   import hookerServiceHistory from '../hookerView/hooker-service-history.vue';
@@ -95,7 +103,7 @@
         this.defkaProps = {src: e.src, title: e.title};
         this.activePage = 10;
         console.log(e, e.src, e.title);
-        console.log('something')}
+      },
     }
   })
 </script>
