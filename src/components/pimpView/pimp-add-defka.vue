@@ -62,7 +62,7 @@
             <v-row align-content="center" v-for="(token,index) in tokens">
                 <div class="pimp-add-defka__links">
                     <h5>
-                        {{`${origin}/#/hooker-regestration/${token.invateToken}`}}
+                        {{`${origin}/#/hooker-registration/${token.invateToken}`}}
                     </h5>
                     <v-btn
                         slot="append"

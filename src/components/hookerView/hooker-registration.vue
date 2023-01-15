@@ -6,7 +6,7 @@
     >
     <v-toolbar-title>Регистрация</v-toolbar-title>
     </v-app-bar>
-		<v-dialog
+		<!-- <v-dialog
         v-model="dialog"
         max-width="350"
         >
@@ -34,7 +34,7 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
-        </v-dialog>
+        </v-dialog> -->
     <v-form v-model="valid">
     <v-container>
     	<p>Общая информация</p>
@@ -55,10 +55,8 @@
           md="12"
         >
           <v-text-field
-            v-model="firstname"
-            :rules="nameRules"
-            :counter="10"
-            label="Имя"
+            v-model="location"
+            label="Адрес"
             required
           ></v-text-field>
         </v-col>
@@ -68,21 +66,44 @@
           md="12"
         >
           <v-text-field
-            v-model="lastname"
-            :rules="nameRules"
-            :counter="10"
-            label="Фамилия"
+            v-model="nation"
+            label="Национальность"
             required
           ></v-text-field>
         </v-col>
 
-				<v-col
-          cols="12"
-          md="12"
-        >
+				<v-col cols="12" md="12">
           <v-text-field
-		  	v-model="age"
+		  	    v-model="age"
             label="Возраст"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-text-field
+		  	    v-model="height"
+            label="Рост"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-text-field
+		  	    v-model="weight"
+            label="Вес"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-text-field
+		  	    v-model="telephone"
+            label="Номер телефона"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-text-field
+		  	    v-model="hairColor"
+            label="Цвет волос"
             required
           ></v-text-field>
         </v-col>
@@ -96,29 +117,6 @@
             required
           ></v-textarea>
         </v-col>
-
-        <v-col
-          cols="12"
-          md="12"
-        >
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
-        </v-col>
-
-		 <v-col
-          cols="12"
-          md="12"
-        >
-          <v-text-field
-            v-model="photoLink"
-            label="Ссылка на фотографию"
-          ></v-text-field>
-        </v-col>
-
 				<v-col cols="12" md="12">
 					<p>Предоставляемые услуги</p>
 					<v-divider></v-divider>
@@ -164,7 +162,7 @@
 					></v-checkbox>
 				</v-col>
 
-				<v-col cols="12" md="12" :key="index" v-for="(index, service) in customService">
+				<v-col cols="12" md="12" :key="index" v-for="(service, index) in customService">
 						<div  class="hooker-registration__new-service">
 							<v-checkbox
 								v-model="service.enabled"
@@ -206,7 +204,7 @@
 					></v-file-input>
 				</v-col>
 				<template v-if="photos.length > 1">
-					<v-col   :key="index" cols="4" v-for="(index, url) in urlPhotos" class="d-flex child-flex">
+					<v-col   :key="index" cols="4" v-for="(url, index) in urlPhotos" class="d-flex child-flex">
 						<v-img :src="url.string" aspect-ratio="1" class="grey lighten-2">
 							<template v-slot:placeholder>
 							<v-row
@@ -226,7 +224,7 @@
 
 				<v-col cols="12" md="12">
 					<div class="hooker-registration__buttons">
-						<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="dialog = true">Завершить регистрацию</v-btn>
+						<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="register()">Завершить регистрацию</v-btn>
 					</div>
 				</v-col>
       </v-row>
@@ -238,27 +236,36 @@
 <script lang="ts">
   import Vue from 'vue'
   import validationMixin from '@/plugins/vuetify'
-import { register } from 'register-service-worker';
-import { kissApi } from '@/api/authApi/kissApi';
+  import { register } from 'register-service-worker';
+  import { kissApi } from '@/api/authApi/kissApi';
 
   export default Vue.extend({
+    props: {
+      token: {
+        type: String,
+        required: true
+      }
+    },
     name: 'hookerRegistration',
-
     data: () => ({
-		photoLink: '',
+		password: '',
 		age: '',
+    nation: '',
+    height: '',
+    weight: '',
+    telephone: '',
+    hairColor: '',
 		dialog: false,
       valid: false,
       firstname: '',
-      lastname: '',
+      location: '',
       nameRules: [
-        (v: any) => !!v || 'Name is required',
-        (v: any) => v.length <= 10 || 'Name must be less than 10 characters',
+        (v: any) => !!v || 'Имя обязательное поле',
+        (v: any) => v.length <= 10 || 'Имя должно быть меньше 10 символов',
       ],
-      email: '',
-      emailRules: [
-        (v: any) => !!v || 'E-mail is required',
-        (v: any) => /.+@.+/.test(v) || 'E-mail must be valid',
+      login: '',
+      loginRules: [
+        (v: any) => !!v || 'Логин обяхательное поле',
       ],
 			hugs: false,
 			kissLight: false,
@@ -292,39 +299,22 @@ import { kissApi } from '@/api/authApi/kissApi';
 				})
 			},
 			async register(){
-				// api register call
-				const name = 'login' + this.firstname;
-
-				const objToSendUser = {
-					username: name,
-					fname: this.firstname,
-					sname: this.lastname,
-					password: "123",
-					role: {
-						id: 2
-					}
-				}
-
-				await kissApi.getKissApi().addUser(objToSendUser);
-
 				const objToSendDefka = {
-					user: {
-						username: name,
-						role: {
-						id: 2,
-						name: "Дефка"
-						}
-					},
-					location: "spb",
+					location: this.location,
 					age: this.age,
-					height: 181,
-					weight: 67,
-					nation: "nigger",
-					telephone: this.photoLink,
-					hair_color: "w"
+					height: this.height,
+					weight: this.weight,
+					nation: this.nation,
+					telephone: this.telephone,
+					hair_color: this.hairColor
 				}
 
-				await kissApi.getKissApi().addDefka(objToSendDefka);
+        const response = await kissApi.getKissApi().registerDefka(this.token, objToSendDefka);
+        if(response.id){
+          //TODO add services push if reg is ok
+          kissApi.setRole('HOOKER');
+          this.$router.push('/hooker');
+        }
 				this.dialog = false;
 				this.$emit('login', {userType: 2, token: 'blablabla'})
 			}

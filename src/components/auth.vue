@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <registration v-if="isRegistration" @isLogin="isRegistration=false" />
+    <registration v-if="isRegistration" @register="authorize($event)" @isLogin="isRegistration=false" />
     
     <v-container v-else>
       <v-text-field
@@ -9,7 +9,7 @@
       ></v-text-field>
       <v-text-field label="Пароль" v-model="password" type="password"></v-text-field>
       <v-col cols="12" md="12">
-        <v-btn @click="authorize()">Войти</v-btn>
+        <v-btn @click="authorize({username: login, password})">Войти</v-btn>
       </v-col>
       <v-col cols="12" md="12">
         <v-btn @click="isRegistration = true">Зарегестрироваться</v-btn>
@@ -40,23 +40,24 @@
       isRegistration: false,
     }),
     methods: {
-      async authorize(){
-        const credential = {
-          username: this.login,
-          password: this.password,
-        }
-        
+      async authorize(cred: {username: string, password: string}){
+        console.log('cred from authorize', cred);
         const newConfig = {
 					...apiConfig,
             auth: {
-              ...credential
+              ...cred
             },
           }
         kissApi.setNewConfig(newConfig);
         const response = await kissApi.getKissApi().login();
         if(response.roleName){
-          window.localStorage.setItem('auth', JSON.stringify(credential));
-
+          window.localStorage.setItem('auth', JSON.stringify(cred));
+          const redirectFrom = this.$route.query.redirectFrom;
+          if (typeof redirectFrom === 'string' && redirectFrom.startsWith('/hooker-registration')) {
+            kissApi.setRole('USER');
+            this.$router.push(redirectFrom);
+            return;
+          }
           const role = response.roleName
           if(role === "USER"){
             kissApi.setRole('USER');

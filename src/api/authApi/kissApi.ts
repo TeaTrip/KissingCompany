@@ -59,6 +59,11 @@ export class KissApi extends Api {
     let response: AxiosResponse<any[]> = await this.delete<any[]>(`/invite_link/${token}`).catch((error: AxiosError) => { throw error });
     return response.data;
   }
+
+  public async registerDefka(token: string, data: any): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>(`/girls/registration/${token}`, data).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
 }
 
 export class KissApiInstance {

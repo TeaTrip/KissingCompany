@@ -22,11 +22,11 @@ const routes = [
     component: unauth,
   },
   {
-    path: '/hooker-registration',
+    path: '/hooker-registration/:token',
     component: hookerRegistration,
+    props: true,
     meta: {
-        allowAnonymous: false,
-        roles: ['UNAUTH']
+        roles: ['USER']
     }
   },
   {
@@ -54,6 +54,11 @@ router.beforeEach((to, from, next) => {
   if(to.meta && to.meta.roles){
     const allowedRoles = to.meta.roles;
     const userRole = kissApi.getRole(); 
+    if(to.path.startsWith('/hooker-registration') && !allowedRoles.includes(userRole)){
+      next({path: '/', query: { redirectFrom: to.path }});
+      return;
+    }
+
     if (allowedRoles && !allowedRoles.includes(userRole)) {
         next({path: '/unauth', replace: true}); 
     } else {

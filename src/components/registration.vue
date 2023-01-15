@@ -43,7 +43,6 @@ import { kissApi } from '@/api/authApi/kissApi';
 		}),
 		methods: {
 			async registration(){
-
 				kissApi.setNewConfig(apiConfig);
 				let user = {
 					username: this.login,
@@ -57,23 +56,7 @@ import { kissApi } from '@/api/authApi/kissApi';
 					console.log('something going wrong');
 					return;
 				}
-
-				window.localStorage.setItem('auth', JSON.stringify({
-						username: user.username,
-						password: user.password
-					}));
-				
-				const newConfig = {
-					...apiConfig,
-					auth: {
-						username: user.username,
-						password: user.password
-					},
-				}
-			
-				kissApi.setNewConfig(newConfig);
-				kissApi.setRole('USER');
-				this.$router.push('/user');
+				this.$emit('register', {username: this.login, password: this.password})
 			}
 		}
 	})
