@@ -70,8 +70,8 @@ import { kissApi } from '@/api/authApi/kissApi';
 				}
 			
 				kissApi.setNewConfig(newConfig);
-
-				const response2 = await kissApi.getKissApi().getAllDefki();
+				kissApi.setRole('USER');
+				this.$router.push('/user');
 			}
 		}
 	})

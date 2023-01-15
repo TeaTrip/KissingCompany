@@ -46,7 +46,7 @@
             <v-list-item-title>История заказов</v-list-item-title>
             </v-list-item>
 
-            <v-list-item @click="$emit('logout')">
+            <v-list-item @click="logout()">
             <v-list-item-icon>
                 <v-icon>mdi-exit-run</v-icon>
             </v-list-item-icon>
@@ -104,6 +104,9 @@ import Vue from 'vue'
         this.activePage = 10;
         console.log(e, e.src, e.title);
       },
+      logout(){
+        this.$eventBus.$emit('logout');
+      }
     }
   })
 </script>

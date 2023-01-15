@@ -20,9 +20,10 @@
 
 <script lang="ts">
   import { apiConfig } from '@/api/authApi/api.config';
-import { kissApi } from '@/api/authApi/kissApi';
+  import { kissApi } from '@/api/authApi/kissApi';
   import registration from '@/components/registration.vue'
-import Vue from 'vue'
+  import Vue from 'vue'
+  import router from '@/router';
 
   export default Vue.extend({
     name: 'auth',
@@ -45,28 +46,29 @@ import Vue from 'vue'
           password: this.password,
         }
         
-        const response = await kissApi.getKissApi().login(credential);
-        if(response.role){
-          const newConfig = {
+        const newConfig = {
 					...apiConfig,
             auth: {
               ...credential
             },
           }
-			
-				  kissApi.setNewConfig(newConfig);
-
+        kissApi.setNewConfig(newConfig);
+        const response = await kissApi.getKissApi().login();
+        if(response.roleName){
           window.localStorage.setItem('auth', JSON.stringify(credential));
 
-          const role = response.role.name
+          const role = response.roleName
           if(role === "USER"){
-            this.$emit('login', {userType: 3})
+            kissApi.setRole('USER');
+            this.$router.push('/user');
           }
           if(role === "HOOKER"){
-            this.$emit('login', {userType: 2})
+            kissApi.setRole('HOOKER');
+            this.$router.push('/hooker');
           }
           if(role === "ADMIN"){
-            this.$emit('login', {userType: 1})
+            kissApi.setRole('ADMIN');
+            this.$router.push('/pimp');
           }
 
           return;

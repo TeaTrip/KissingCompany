@@ -8,6 +8,9 @@ import router from './router';
 Vue.config.productionTip = false
 Vue.use(VueRouter);
 
+const eventBus = new Vue();
+Vue.prototype.$eventBus = eventBus;
+
 new Vue({
   vuetify,
   router,

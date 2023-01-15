@@ -45,6 +45,7 @@ export default Vue.extend({
     userType: -1,
   }),
   created: function() {
+    this.$eventBus.$on('logout', this.logout);
     this.tryAuth();
   },
   methods: {
@@ -58,26 +59,28 @@ export default Vue.extend({
       console.log('there is cred', cred);
 
       if(cred) {
+        const newConfig = {
+          ...apiConfig,
+            auth: {
+              ...cred
+            },
+          }
+        kissApi.setNewConfig(newConfig);
         cred = JSON.parse(cred);
-        const response = await kissApi.getKissApi().login(cred);
-          if(response.role){
-            const newConfig = {
-            ...apiConfig,
-              auth: {
-                ...cred
-              },
-            }
-        
-            kissApi.setNewConfig(newConfig);
-            const role = response.role.name
+        const response = await kissApi.getKissApi().login();
+          if(response.roleName){
+            const role = response.roleName
             if(role === "USER"){
-              this.switchView({userType: 3});
+              kissApi.setRole('USER');
+              this.$router.push('/user');
             }
             if(role === "HOOKER"){
-              this.switchView({userType: 2});
+              kissApi.setRole('HOOKER');
+              this.$router.push('/hooker');
             }
             if(role === "ADMIN"){
-              this.switchView({userType: 1});
+              kissApi.setRole('ADMIN');
+              this.$router.push('/pimp');
             }
 
             return;
@@ -86,11 +89,12 @@ export default Vue.extend({
             console.log('something went wrog');
           } 
       }
-      this.switchView({userType: 0});
+      this.$router.push('/');
     },
     logout() {
+      console.log('logout from App.vue!')
       kissApi.logout();
-      this.switchView({userType: 0});
+      this.$router.push('/')
     }
   },
 });

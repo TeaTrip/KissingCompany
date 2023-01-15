@@ -53,7 +53,7 @@
             <v-list-item-title>История записей</v-list-item-title>
             </v-list-item>
 
-            <v-list-item @click="$emit('logout')">
+            <v-list-item @click="logout()">
             <v-list-item-icon>
                 <v-icon>mdi-exit-run</v-icon>
             </v-list-item-icon>
@@ -98,7 +98,10 @@
 			selectMenuItem(index: number){
 				this.activePage = index;
 				this.drawer = false;
-			}
+			},
+      logout(){
+        this.$eventBus.$emit('logout');
+      }
     }
   })
 </script>

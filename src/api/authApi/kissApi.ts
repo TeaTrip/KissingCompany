@@ -31,8 +31,8 @@ export class KissApi extends Api {
     return defka;
   }
 
-  public async login(data: any): Promise<any> {
-    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/login',data).catch((error: AxiosError) => { throw error });
+  public async login(): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/users/me').catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
     return users;
   }
@@ -47,8 +47,10 @@ export class KissApi extends Api {
 export class KissApiInstance {
   private kissApi: KissApi;
   private defaultConfig: any;
+  private role: string;
   constructor(config: any){
     this.kissApi = new KissApi(config);
+    this.role = 'UNAUTH';
     this.defaultConfig = config;
   }
 
@@ -62,7 +64,16 @@ export class KissApiInstance {
 
   public logout(){
     window.localStorage.removeItem('auth');
+    this.role = 'UNAUTH';
     this.kissApi = new KissApi(this.defaultConfig);
+  }
+
+  public getRole(): string{
+    return this.role;
+  }
+
+  public setRole(nRole: string){
+    this.role = nRole;
   }
 }
 
