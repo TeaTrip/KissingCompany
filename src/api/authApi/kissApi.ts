@@ -42,6 +42,23 @@ export class KissApi extends Api {
     let users: any[] = response.data;
     return users;
   }
+
+  public async getInviteLink(): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/invite_link').catch((error: AxiosError) => { throw error });
+    let users: any[] = response.data;
+    return users;
+  }
+
+  public async getInviteLinks(): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/invite_link').catch((error: AxiosError) => { throw error });
+    let users: any[] = response.data;
+    return users;
+  }
+
+  public async deleteInviteLink(token: string): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.delete<any[]>(`/invite_link/${token}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
 }
 
 export class KissApiInstance {

@@ -51,22 +51,45 @@
             </div>
     
             <div class="pimp-add-defka__buttons">
+                <v-btn class="pimp-add-defka__grid" style="grid-column: 2/3" color="error" @click="generate()">Сгенерировать</v-btn>
                 <v-btn class="pimp-add-defka__grid" style="grid-column: 2/3" color="error" @click="send()">Отправить</v-btn>
-                <v-btn class="pimp-add-defka__grid" style="grid-column: 2/3" color="error" outlined @click="dialog = true">Сбросить ссылку</v-btn>
             </div>
+        </v-col>
+        <v-col>
+            <p class="text-center">
+                Активные ссылки
+            </p>
+            <v-row align-content="center" v-for="(token,index) in tokens">
+                <div class="pimp-add-defka__links">
+                    <h5>
+                        {{`${origin}/#/hooker-regestration/${token.invateToken}`}}
+                    </h5>
+                    <v-btn
+                        slot="append"
+                        icon
+                        color="red darken-1"
+                        @click="deleteLink(index)"
+                        >
+                        <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                </div>
+            </v-row>
         </v-col>
     </v-row>
 
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
   export default Vue.extend({
     name: 'pimpAddDefka',
 
     data: () => ({
         dialog: false,
         inviteLink: '',
+        tokens: [{invateToken: ''}],
+        origin: '',
     }),
     methods: {
         send(){
@@ -93,12 +116,23 @@
             elem.select();
             document.execCommand('copy');
             document.body. removeChild(elem);
+        },
+        async generate(){
+            const token = await kissApi.getKissApi().getInviteLink();
+            const result = this.origin + '/#/hooker-registration/' + token.invateToken
+            this.inviteLink = result
+        },
+        deleteLink(id: number) {
+            kissApi.getKissApi().deleteInviteLink(this.tokens[id].invateToken);
+            this.tokens.splice(id,1);
         }
     },
-    mounted(){
+    async mounted(){
         //req to api to get link
-        const res = 'https://vuejs.org/guide/introduction.html#api-styles';
+        this.origin = window.location.origin
+        const res = '';
         this.inviteLink = res;
+        this.tokens = await kissApi.getKissApi().getInviteLinks()
     }
   })
 </script>
@@ -118,6 +152,10 @@
     }
     &__grid {
         grid-column: 1/2;
+    }
+    &__links {
+        display: grid;
+        grid-template-columns: auto min-content;
     }
 
 }
