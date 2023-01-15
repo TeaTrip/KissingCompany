@@ -59,6 +59,7 @@ export default Vue.extend({
       console.log('there is cred', cred);
 
       if(cred) {
+        cred = JSON.parse(cred);
         const newConfig = {
           ...apiConfig,
             auth: {
@@ -66,7 +67,7 @@ export default Vue.extend({
             },
           }
         kissApi.setNewConfig(newConfig);
-        cred = JSON.parse(cred);
+        console.log('cred is ', cred)
         const response = await kissApi.getKissApi().login();
           if(response.roleName){
             const role = response.roleName
