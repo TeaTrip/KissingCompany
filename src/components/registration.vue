@@ -43,6 +43,8 @@ import { kissApi } from '@/api/authApi/kissApi';
 		}),
 		methods: {
 			async registration(){
+
+				kissApi.setNewConfig(apiConfig);
 				let user = {
 					username: this.login,
 					first_name: this.name,
