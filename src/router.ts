@@ -7,6 +7,9 @@ import user from '@/components/userView/user.vue'
 import pimp from '@/components/pimpView/pimp.vue'
 import hooker from '@/components/hookerView/hooker.vue'
 import unauth from  '@/components/unauth.vue'
+import userAllDefki from '@/components/userView/user-all-defki.vue'
+import userDefka from '@/components/userView/user-all-defki.vue'
+import userHistory from '@/components/userView/user-history.vue'
 import { kissApi } from '@/api/authApi/kissApi';
 
 Vue.use(VueRouter);
@@ -32,6 +35,20 @@ const routes = [
   {
     path: '/user',
     meta: { roles: ['USER'] },
+    children: [
+      {
+        path: 'girls',
+        component: userAllDefki
+      },
+      {
+        path: 'girls/:id',
+        component: userDefka
+      },
+      {
+        path: 'history',
+        component: userHistory
+      },
+    ],
     component: user,
   },
   {

@@ -301,7 +301,7 @@
 					nation: this.nation,
 					telephone: this.telephone,
 					hair_color: this.hairColor,
-					nikname: this.profileName,
+					nickname: this.profileName,
 				}
 
         const response = await kissApi.getKissApi().registerDefka(this.token, objToSendDefka);

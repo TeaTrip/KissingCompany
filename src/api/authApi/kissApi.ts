@@ -14,8 +14,14 @@ export class KissApi extends Api {
      * @returns {Promise<any[]>} any[] - All the users
      */
   public async getAllDefki(): Promise<any[]> {
-    let response: AxiosResponse<any[]> = await this.get<any[]>("/girls").catch((error: AxiosError) => { throw error });
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/girls').catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
+    return users;
+  }
+
+  public async getDefka(id: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/girls/${id}`).catch((error: AxiosError) => { throw error });
+    let users: any = response.data;
     return users;
   }
 
@@ -68,6 +74,11 @@ export class KissApi extends Api {
   //Prices aka услуги
   public async createPrice(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/price_list', data).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async getPrices(): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/price_list').catch((error: AxiosError) => { throw error });
     return response.data;
   }
 

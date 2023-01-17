@@ -167,12 +167,12 @@ import Vue from 'vue'
       kissWithTongue: false,
       filter: false,
       cards: [
-        { title: 'Барбара «Биби» Стивенс', src: 'https://southpark.cc-fan.tv/characters/10.jpg', flex: 6 },
-        { title: 'Шелли Марш', src: 'https://southpark.cc-fan.tv/characters/14.jpg', flex: 6 },
-        { title: 'Ребекка Котсвальд', src: 'https://southpark.cc-fan.tv/characters/19.jpg', flex: 6 },
-        { title: 'Венди Тестабургер', src: 'https://southpark.cc-fan.tv/characters/7.jpg', flex: 6 },
-        { title: 'Николь Дэниелс', src: 'https://e7.pngegg.com/pngimages/501/252/png-clipart-little-einstein-character-illustration-south-park-nichole-daniels-at-the-movies-cartoons.png', flex: 6 },
-        { title: 'Хайди тёрнер', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH_QpXG6SD8-Xk5NJUevVfs6UC0CY6e7GWmRaLZM4dRo1tbxSdeu8xBVeVWBWtGY4vGmo&usqp=CAU', flex: 6 },
+        { title: '', src: '', flex: 6 },
+        // { title: 'Шелли Марш', src: 'https://southpark.cc-fan.tv/characters/14.jpg', flex: 6 },
+        // { title: 'Ребекка Котсвальд', src: 'https://southpark.cc-fan.tv/characters/19.jpg', flex: 6 },
+        // { title: 'Венди Тестабургер', src: 'https://southpark.cc-fan.tv/characters/7.jpg', flex: 6 },
+        // { title: 'Николь Дэниелс', src: 'https://e7.pngegg.com/pngimages/501/252/png-clipart-little-einstein-character-illustration-south-park-nichole-daniels-at-the-movies-cartoons.png', flex: 6 },
+        // { title: 'Хайди тёрнер', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH_QpXG6SD8-Xk5NJUevVfs6UC0CY6e7GWmRaLZM4dRo1tbxSdeu8xBVeVWBWtGY4vGmo&usqp=CAU', flex: 6 },
       ],
       cardsReserve: [{title: 's', src: 's', flex: 6}],
     }),
@@ -185,12 +185,11 @@ import Vue from 'vue'
         this.filter = false;
         this.cardsReserve = this.cards;
         this.cards = this.cards.slice(1,3);
-
       }
     },
     async mounted() {
       const res = await kissApi.getKissApi().getAllDefki();
-      const obj = res.map(defka => ({title: defka.user.first_name + ' ' + defka.user.second_name, src: defka.telephone, flex:6}))
+      const obj = res.map(defka => ({title: defka.nikname, src: defka.telephone, flex:6, id: defka.id}))
       this.cards = obj;
     }
   })

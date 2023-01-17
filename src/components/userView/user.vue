@@ -60,7 +60,7 @@
 		</div>
 		<v-container fill-height fluid class="pimp__content">
 			<user-all-defki v-if="activePage == 1" @openDefka="open($event)"/>
-      <user-defka v-if="activePage == 10" />
+      <user-defka v-if="activePage == 3" />
 			<user-history v-if="activePage == 2" />
 		</v-container>
     </div>
@@ -91,22 +91,39 @@ import Vue from 'vue'
         drawer: false,
         group: null,
         name: 'Кайл Брофловски',
-				activePage: 0,
         defkaProps: {},
     }),
     methods: {
-			selectMenuItem(index: number){
-				this.activePage = index;
+			selectMenuItem(val: number){
+        if (val === 1) {
+          this.$router.push('/user/girls');
+        } else if (val === 2) {
+          this.$router.push('/user/history');
+        }
 				this.drawer = false;
 			},
       open(e: any){
         this.defkaProps = {src: e.src, title: e.title};
-        this.activePage = 10;
+        this.$router.push(`/user/girls/${e.id}`);
         console.log(e, e.src, e.title);
       },
       logout(){
         this.$eventBus.$emit('logout');
       }
+    },
+    computed: {
+      activePage() {
+        switch(true) {
+            case this.$route.path === '/user/girls': return 1;
+            case /\/user\/girls\/\d+/.test(this.$route.path): return 3;
+            case this.$route.path === '/user/history': return 2;
+            default: return 0;
+        }
+      }
+    },
+    async mounted() {
+      const res = await kissApi.getKissApi().login();
+      this.name = `${res.firstName} ${res.secondName}`;
     }
   })
 </script>

@@ -13,11 +13,11 @@
               height="200px"
               src="https://southpark.cc-fan.tv/characters/14.jpg"
             >
-              <v-card-title v-text="'Шелли марш'"></v-card-title>
+              <v-card-title v-text="nickname"></v-card-title>
             </v-img>
-			<h1>
+			<!-- <h3>
 				4.5/5
-			</h1>
+			</h3> -->
         </v-col>
 		<v-col
           cols="12"
@@ -28,28 +28,34 @@
 			flat
 			tile
 			>
-			<h1>Возраст:</h1>
-			<h1>7</h1>
+			<h3>Возраст:</h3>
+			<h3>{{age}}</h3>
 			</v-card>
 			<v-card
 			class="d-flex justify-space-around mb-6"
 			flat
 			tile
 			>
-			<h1>Рост:</h1>
-			<h1>120</h1>
+			<h3>Рост:</h3>
+			<h3>{{height}}</h3>
 			</v-card>
-			<v-card
-			class="d-flex justify-space-around mb-6"
-			flat
-			tile
-			>
-			<h1>Цвет волос:</h1>
-			<h1>Шатенка</h1>
+			<v-card class="d-flex justify-space-around mb-6" flat tile>
+				<h3>Цвет волос:</h3>
+				<h3>{{hairColor}}</h3>
+			</v-card>
+			<v-card class="d-flex justify-space-around mb-6" flat tile>
+				<h3>Национальность:</h3>
+				<h3>{{nation}}</h3>
+			</v-card>
+			<v-card class="d-flex justify-space-around mb-6" flat tile>
+				<h3>Телефон:</h3>
+				<h3>{{telephone}}</h3>
 			</v-card>
 		</v-col>
 
-		<v-col
+
+
+		<!-- <v-col
           cols="12"
           md="12"
         >
@@ -58,46 +64,29 @@
             label="Описание"
 			readonly
           ></v-textarea>
-        </v-col>
+        </v-col> -->
 
 		<v-col cols="12" md="12">
 			<p>Предоставляемые услуги</p>
 			<v-divider></v-divider>
 		</v-col>
 
-		<v-col cols="12" md="12">
-			<v-checkbox
-				v-model="kissWithTongue"
-				label="Поцелуй (с языком)"
-				color="primary"
-				value="primary"
-				hide-details
-			></v-checkbox>
-		</v-col>
+		<template v-for="service in services">
+			<v-col cols="12" md="12">
+				<v-checkbox
+					v-model="service.isWanted"
+					:label="service.label"
+					color="primary"
+					value="primary"
+					hide-details
+				></v-checkbox>
+			</v-col>
+		</template>
+
 
 		<v-col cols="12" md="12">
-			<v-checkbox
-				v-model="kissLight"
-				label="Поцелуй (в щёку)"
-				color="primary"
-				value="primary"
-				hide-details
-			></v-checkbox>
-		</v-col>
-
-		<v-col cols="12" md="12">
-			<v-checkbox
-				v-model="hugs"
-				label="Объятия"
-				color="primary"
-				value="primary"
-				hide-details
-			></v-checkbox>
-		</v-col>
-
-		<v-col cols="12" md="12">
-			<div class="hooker-registration__buttons">
-				<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="addNewService()">Выбрать время</v-btn>
+			<div class="user-defka__buttons">
+				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="addNewService()">Выбрать время</v-btn>
 			</div>
 		</v-col>
       </v-row>
@@ -139,8 +128,8 @@
 			</v-col>
 		</v-col>
 		<v-col v-if="date" cols="12" md="12">
-			<div class="hooker-registration__buttons">
-				<v-btn class="hooker-registration__grid" style="grid-column: 2/3" color="error" @click="accept = true">Подтвердить</v-btn>
+			<div class="user-defka__buttons">
+				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="accept = true">Подтвердить</v-btn>
 			</div>
 		</v-col>
 		<comments />
@@ -151,6 +140,7 @@
 <script lang="ts">
   import Vue from 'vue'
   import comments from  '@/components/userView/comments/comments.vue';
+	import { kissApi } from '@/api/authApi/kissApi';
 
   export default Vue.extend({
     name: 'userDefka',
@@ -160,14 +150,19 @@
 	},
 
     data: () => ({
-		accept: false,
-		date: '',
-		dialog: false,
-      valid: false,
-      firstname: '',
-      lastname: '7',
-	  description: 'Люблю крепко обниматься и долго целоваться!!!!',
-	  items: ['15:00', '17:00', '19:00', '20:00'],
+			age: 0,
+			height: 0,
+			hairColor: '',
+			nation: '',
+			telephone: '',
+			accept: false,
+			date: '',
+			nickname: '',
+			dialog: false,
+			valid: false,
+			services: [] as { isWanted: boolean, label: string }[],
+			description: 'Люблю крепко обниматься и долго целоваться!!!!',
+			items: ['15:00', '17:00', '19:00', '20:00'],
       nameRules: [
         (v: any) => !!v || 'Name is required',
       ],
@@ -208,23 +203,41 @@
 				this.dialog = false;
 				this.$emit('login', {userType: 0, token: 'blablabla'})
 			},
-            mounted(){
-            }
 		},
-		
+		async mounted(){
+			const id = this.$route.params.id;
+			const res = await kissApi.getKissApi().getDefka(parseInt(id));
+			if(res){
+				this.age = res.age;
+				this.height = res.height;
+				this.hairColor = res.hair_color;
+				this.nation = res.nation;
+				this.telephone = res.telephone;
+				this.nickname = res.nikname
+			};
+			const result = await kissApi.getKissApi().getPrices();
+			result.forEach(service => {
+				if(service.girlId == id){
+					const obj = {
+						isWanted: false,
+						label: `${service.serviceName} - ${service.cost}$`
+					}
+					this.services.push(obj);
+				}
+			})
+			console.log(result);
+		},
 		watch: {
 			photos: 'logFiles',
-		}
-
-        
+		}       
   })
 </script>
 
 <style lang="scss">
-.hooker-registration{
-	&__new-service{
+.user-defka{
+	&__service{
 		display:grid;
-		grid-template-columns: min-content 5fr 2fr;
+		grid-template-columns: 1fr 1fr;
 		grid-gap: 5px;
 	}
 	&__buttons {
