@@ -64,6 +64,13 @@ export class KissApi extends Api {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>(`/girls/registration/${token}`, data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
+
+  //Prices aka услуги
+  public async createPrice(data: any): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/price_list', data).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
 }
 
 export class KissApiInstance {

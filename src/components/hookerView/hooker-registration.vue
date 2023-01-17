@@ -124,16 +124,6 @@
 
 				<v-col cols="12" md="12">
 					<v-checkbox
-						v-model="selectAll"
-						label="Выбрать все"
-						color="primary"
-						value="primary"
-						hide-details
-					></v-checkbox>
-				</v-col>
-
-				<v-col cols="12" md="12">
-					<v-checkbox
 						v-model="kissWithTongue"
 						label="Поцелуй (с языком)"
 						color="primary"
@@ -311,7 +301,33 @@
 
         const response = await kissApi.getKissApi().registerDefka(this.token, objToSendDefka);
         if(response.id){
-          //TODO add services push if reg is ok
+          let serviceObj = {
+              cost: 25,
+              serviceName: 'долгий поцелуй',
+              girlId: response.id,
+              isCostPerMinute: false,
+              estimatedDurationInMin: 5
+          };
+          if(this.kissLight){
+            kissApi.getKissApi().createPrice({...serviceObj, serviceName: 'Поцелуй (с языком)'});
+          }
+          if(this.kissWithTongue){
+            kissApi.getKissApi().createPrice({...serviceObj, serviceName: 'Поцелуй (в щеку)'});
+          }
+          if(this.hugs){
+            kissApi.getKissApi().createPrice({...serviceObj, serviceName: 'Объятия'});
+          }
+          this.customService.forEach(service => {
+            if(service.enabled){
+              const obj = {
+                ...serviceObj,
+                serviceName: service.name,
+                cost: service.price
+              };
+              kissApi.getKissApi().createPrice(obj);
+            }
+          })
+
           kissApi.setRole('HOOKER');
           this.$router.push('/hooker');
         }

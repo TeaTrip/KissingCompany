@@ -41,7 +41,6 @@
     }),
     methods: {
       async authorize(cred: {username: string, password: string}){
-        console.log('cred from authorize', cred);
         const newConfig = {
 					...apiConfig,
             auth: {
