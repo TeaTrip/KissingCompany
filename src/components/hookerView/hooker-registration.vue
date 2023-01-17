@@ -50,10 +50,16 @@
 					prepend-icon="mdi-camera"
 				></v-file-input>
 				</v-col>
-        <v-col
-          cols="12"
-          md="12"
-        >
+
+				<v-col cols="12" md="12">
+          <v-text-field
+            v-model="profileName"
+            label="Отображаемое имя"
+            required
+          ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="12">
           <v-text-field
             v-model="location"
             label="Адрес"
@@ -61,10 +67,7 @@
           ></v-text-field>
         </v-col>
 
-        <v-col
-          cols="12"
-          md="12"
-        >
+        <v-col cols="12" md="12">
           <v-text-field
             v-model="nation"
             label="Национальность"
@@ -240,35 +243,36 @@
     data: () => ({
 		password: '',
 		age: '',
-    nation: '',
-    height: '',
-    weight: '',
-    telephone: '',
-    hairColor: '',
+		nation: '',
+		height: '',
+		weight: '',
+		telephone: '',
+		hairColor: '',
 		dialog: false,
-      valid: false,
-      firstname: '',
-      location: '',
-      nameRules: [
-        (v: any) => !!v || 'Имя обязательное поле',
-        (v: any) => v.length <= 10 || 'Имя должно быть меньше 10 символов',
-      ],
-      login: '',
-      loginRules: [
-        (v: any) => !!v || 'Логин обяхательное поле',
-      ],
-			hugs: false,
-			kissLight: false,
-			kissWithTongue: false,
-			selectAll: false,
-			customService: [{
-				enabled: false,
-				name: '',
-				price: '',
-				}
-			],
-			photos: [],
-			urlPhotos: [{string: ''}]
+		valid: false,
+		firstname: '',
+		location: '',
+		nameRules: [
+			(v: any) => !!v || 'Имя обязательное поле',
+			(v: any) => v.length <= 10 || 'Имя должно быть меньше 10 символов',
+		],
+		login: '',
+		loginRules: [
+			(v: any) => !!v || 'Логин обяхательное поле',
+		],
+		hugs: false,
+		kissLight: false,
+		kissWithTongue: false,
+		selectAll: false,
+		customService: [{
+			enabled: false,
+			name: '',
+			price: '',
+			}
+		],
+		photos: [],
+		urlPhotos: [{string: ''}],
+		profileName: '',
     }),
 
 		methods: {
@@ -296,7 +300,8 @@
 					weight: this.weight,
 					nation: this.nation,
 					telephone: this.telephone,
-					hair_color: this.hairColor
+					hair_color: this.hairColor,
+					nikname: this.profileName,
 				}
 
         const response = await kissApi.getKissApi().registerDefka(this.token, objToSendDefka);
@@ -331,8 +336,6 @@
           kissApi.setRole('HOOKER');
           this.$router.push('/hooker');
         }
-				this.dialog = false;
-				this.$emit('login', {userType: 2, token: 'blablabla'})
 			}
 		},
 		
