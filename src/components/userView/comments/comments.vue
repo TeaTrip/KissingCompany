@@ -2,7 +2,6 @@
     <v-col cols="12" md="12">
         <v-divider></v-divider>
         <p>Отзывы</p>
-
         <v-col v-for="comment in comments">
           <comment :name="comment.username" :text="comment.comment" :stars="comment.stars" />
         </v-col>

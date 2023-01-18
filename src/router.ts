@@ -13,6 +13,7 @@ import userHistory from '@/components/userView/user-history.vue'
 import pimpAllDefki from '@/components/pimpView/pimp-all-defki.vue'
 import pimpAddDefka from '@/components/pimpView/pimp-add-defka.vue'
 import hookerMyPage from '@/components/hookerView/hooker-my-page.vue'
+import userFeedbacks from '@/components/userView/user-feedbacks.vue'
 import { kissApi } from '@/api/authApi/kissApi';
 
 
@@ -51,6 +52,10 @@ const routes = [
       {
         path: 'history',
         component: userHistory
+      },
+      {
+        path: 'appfeedback',
+        component: userFeedbacks,
       },
     ],
     component: user,

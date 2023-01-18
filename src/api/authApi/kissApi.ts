@@ -154,9 +154,18 @@ export class KissApi extends Api {
     return response.data;
   }
 
-  ///feedback/3
   public async getFeedbackByGirlId(id: number): Promise<any[]> {
     let response: AxiosResponse<any[]> = await this.get<any[]>(`/feedback/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async getAppFeedbacks(): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/app_feedback').catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async postAppFeedback(data: any): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/app_feedback', data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
 }

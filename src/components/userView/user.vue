@@ -46,6 +46,13 @@
             <v-list-item-title>История заказов</v-list-item-title>
             </v-list-item>
 
+            <v-list-item @click="selectMenuItem(4)">
+            <v-list-item-icon>
+                <v-icon>mdi-comment-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Отзывы о приложении</v-list-item-title>
+            </v-list-item>
+
             <v-list-item @click="logout()">
             <v-list-item-icon>
                 <v-icon>mdi-exit-run</v-icon>
@@ -62,6 +69,7 @@
 			<user-all-defki v-if="activePage == 1" @openDefka="open($event)"/>
       <user-defka v-if="activePage == 3" />
 			<user-history v-if="activePage == 2" />
+      <user-feedbacks v-if="activePage == 4" :username="name" />
 		</v-container>
     </div>
 </template>
@@ -75,6 +83,7 @@ import Vue from 'vue'
   import userAllDefki from './user-all-defki.vue';
   import userDefka from './user-defka.vue';
   import userHistory from './user-history.vue';
+  import userFeedbacks from './user-feedbacks.vue'
 
   export default Vue.extend({
     name: 'user',
@@ -85,6 +94,7 @@ import Vue from 'vue'
     userHistory,
     userAllDefki,
     userDefka,
+    userFeedbacks,
 },
 
     data: () => ({
@@ -99,6 +109,9 @@ import Vue from 'vue'
           this.$router.push('/user/girls');
         } else if (val === 2) {
           this.$router.push('/user/history');
+        }
+        else if (val === 4) {
+          this.$router.push('/user/appfeedback');
         }
 				this.drawer = false;
 			},
@@ -117,6 +130,7 @@ import Vue from 'vue'
             case this.$route.path === '/user/girls': return 1;
             case /\/user\/girls\/\d+/.test(this.$route.path): return 3;
             case this.$route.path === '/user/history': return 2;
+            case this.$route.path === '/user/appfeedback': return 4;
             default: return 0;
         }
       }
