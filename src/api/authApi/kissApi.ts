@@ -118,7 +118,25 @@ export class KissApi extends Api {
     return response.data;
   }
 
-  
+  public async getNearestServicesForDefkaById(id: number): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/service_history/get_nearest_by_girl_id/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async approveServiceById(id: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.put<any[], any[]>(`/service_history/approve/${id}`).catch((error: AxiosError) => { throw error });
+    return response;
+  }
+
+  public async endServiceById(id: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.put<any[], any[]>(`/service_history/stop/${id}`).catch((error: AxiosError) => { throw error });
+    return response;
+  }
+
+  public async startServiceById(id: number): Promise<any> {
+    let response: AxiosResponse<any> = await this.put<any[], any[]>(`/service_history/start/${id}`).catch((error: AxiosError) => { throw error });
+    return response;
+  }
 
 }
 
