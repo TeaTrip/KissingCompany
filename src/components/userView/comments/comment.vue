@@ -6,6 +6,7 @@
       >
         <v-card-titile>{{name}}</v-card-titile>
         <v-card-text>{{text}}</v-card-text>
+        <v-card-text>Оценка: {{stars}}/5</v-card-text>
       </v-card>
     </div>
   </template>
@@ -17,7 +18,8 @@
         name: 'comment',
         props: {
           name: String,
-          text: String
+          text: String,
+          stars: String,
         },
         data: () => ({
             

@@ -150,7 +150,7 @@
 				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="book()">Подтвердить</v-btn>
 			</div>
 		</v-col>
-		<comments />
+		<comments :girlId="girlId" />
     </v-container>
   </div>
 </template>
@@ -168,6 +168,7 @@
 	},
 
     data: () => ({
+			girlId: 0,
 			age: 0,
 			height: 0,
 			hairColor: '',
@@ -254,6 +255,7 @@
 		},
 		async mounted(){
 			const id = this.$route.params.id;
+			this.girlId = parseInt(id);
 			const res = await kissApi.getKissApi().getDefka(parseInt(id));
 			if(res){
 				this.age = res.age;

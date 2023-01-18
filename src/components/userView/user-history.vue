@@ -5,6 +5,11 @@
       <v-card>
         <v-container>
           <v-textarea v-model="feedback" label="Оставьте свой отзыв"></v-textarea>
+          <v-container class="rating">
+            <v-icon v-for="n in 5" :key="n" @mouseover="hover(n)" @click="select(n)" :color="getColor(n)">
+              mdi-heart
+            </v-icon>
+          </v-container>
           <v-btn @click="setFeedbackToOrder(serviceId)">OK</v-btn>
           <v-btn @click="feedbackDialog = false">Отмена</v-btn>
         </v-container>
@@ -35,7 +40,7 @@
                         outlined
                         rounded
                         text
-                        @click="openDialog(item.id)"
+                        @click="openDialog(item.girlid)"
                       >
                         Оставить отзыв
                       </v-btn>
@@ -86,13 +91,19 @@
     name: 'userHistory',
 
     data: () => ({
+        selected: 0,
+        hovering: 0,
+        heartColor: ['#ccc', '#ccc', '#ccc', '#ccc', '#ccc'],
+        selectedHearts: 0,
         feedbackDialog: false,
         myLogin: '',
         serviceId: '',
         feedback: '',
+        girlid: '',
         items: [
         {
           id: '',
+          girlid: '',
           color: '#1F7087',
           date: 'ПТ, 05 февраля 18:45',
           place: 'Кронверский просп. 49',
@@ -138,12 +149,38 @@
         }
       },
       async setFeedbackToOrder(id: string){
-        
+        const obj = {
+          girl_id: this.girlid,
+          stars: this.selected,
+          comment: this.feedback
+        }
+        kissApi.getKissApi().postGirlFeedback(obj);
         this.feedbackDialog = false;
       },
       openDialog(id: string){
-        this.serviceId = id;
+        this.hovering = 0;
+        this.selected = 0;
+        this.girlid = id;
+        this.feedback = '';
         this.feedbackDialog = true;
+      },
+      hover(n: number) {
+        if (n > this.selected) {
+          this.hovering = n
+        }
+      },
+      select(n: number) {
+        this.selected = n
+        this.hovering = 0
+      },
+      getColor(n: number) {
+        if (n <= this.selected) {
+          return 'red'
+        } else if (n <= this.hovering) {
+          return 'red'
+        } else {
+          return 'grey'
+        }
       }
     },
     async mounted() {
@@ -158,6 +195,7 @@
         const obj = {
           id: info.id,
           color: '#1F7087',
+          girlid: info.girlDto.id,
           place: info.girlDto.location,
           girlname: info.girlDto.nikname,
           totalCost: info.totalCost,

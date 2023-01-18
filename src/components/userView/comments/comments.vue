@@ -4,13 +4,14 @@
         <p>Отзывы</p>
 
         <v-col v-for="comment in comments">
-          <comment :name="comment.username" :text="comment.text" />
+          <comment :name="comment.username" :text="comment.comment" :stars="comment.stars" />
         </v-col>
     </v-col>
   </template>
   
   <script lang="ts">
-    import Vue from 'vue'
+    import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
     import comment from './comment.vue';
   
     export default Vue.extend({
@@ -18,20 +19,39 @@
         components: {
           comment
         },
-        
+        props: {
+          girlId: {
+            type: Number,
+            required: true
+          }
+        },
         data: () => ({
             comments: [
               {username: 'Kyle',
-              text: 'Отличная дефка! Обнимается супер!'},
+              comment: 'Отличная дефка! Обнимается супер!',
+              stars: '5',
+              },
               {username: 'Erick Cartman',
-              text: 'Всё понравилось! Лучше чем мама кайла'}
+              comment: 'Всё понравилось! Лучше чем мама кайла',
+              stars: '5',
+              }
             ]
         }),
         methods: {
-            mounted(){
-
-            }
+            
         },
+        computed: {
+          async girls() {
+            const res = await kissApi.getKissApi().getFeedbackByGirlId(this.girlId);
+            console.log(res);
+            this.comments = res;
+          }
+        },
+        async mounted(){
+          const res = await kissApi.getKissApi().getFeedbackByGirlId(this.girlId);
+          console.log(res);
+          this.comments = res;
+        }
                 
         })
   </script>
