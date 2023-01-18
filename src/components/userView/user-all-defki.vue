@@ -12,7 +12,7 @@
     <v-container fluid>
       <v-row dense>
         <v-container v-if="filter">
-          <v-col cols="12" md="12">
+          <!-- <v-col cols="12" md="12">
             <p>Предоставляемые услуги</p>
             <v-divider></v-divider>
           </v-col>
@@ -99,20 +99,39 @@
               value="primary"
               hide-details
             ></v-checkbox>
-          </v-col>
+          </v-col> -->
+          <!-- <template v-for="filter in filters">
+            <v-col cols="12" md="12">
+              <v-col class="d-flex" cols="12">
+                <v-select
+                :items="availableTimes"
+                v-model="time"
+                label="Свободное время"
+                ></v-select>
+              </v-col>
+            </v-col>
+          </template> -->
 
-          <v-btn
+          <v-select v-model="selectedLocation" :items="locations" label="Адрес"></v-select>
+          <v-select v-model="selectedAge" :items="ages" label="Возраст"></v-select>
+          <v-select v-model="selectedHeight" :items="heights" label="Рост"></v-select>
+          <v-select v-model="selectedWeight" :items="weights" label="Вес"></v-select>
+          <v-select v-model="selectedNation" :items="nations" label="Национальность"></v-select>
+          <v-select v-model="selectedHairColor" :items="hairColors" label="Цвет волос"></v-select>
+
+
+          <!-- <v-btn
             :color="'error'"
             text
             @click="applyFilter()"
           >
             {{"Применить"}}
-          </v-btn>
+          </v-btn> -->
 
-          </v-col>
+          
         </v-container>
         <v-col
-          v-for="card in cards"
+          v-for="card in filteredGirls"
           :key="card.title"
           :cols="card.flex"
         >
@@ -162,10 +181,23 @@ import Vue from 'vue'
       shaten: false,
       from: '',
       to: '',
+      selectedLocation: '',
+      selectedAge: '',
+      selectedHeight: '',
+      selectedWeight: '',
+      selectedNation: '',
+      selectedHairColor: '',
+      weights: ['Не выбрано'],
+      nations: ['Не выбрано'],
+      hairColors: ['Не выбрано'],
+      locations: ['Не выбрано'],
+      ages: ['Не выбрано'],
+      heights: ['Не выбрано'],
       hugs: false,
       kissLight: false,
       kissWithTongue: false,
       filter: false,
+      filters: [],
       cards: [
         { title: '', src: '', flex: 6 },
         // { title: 'Шелли Марш', src: 'https://southpark.cc-fan.tv/characters/14.jpg', flex: 6 },
@@ -189,8 +221,42 @@ import Vue from 'vue'
     },
     async mounted() {
       const res = await kissApi.getKissApi().getAllDefki();
-      const obj = res.map(defka => ({title: defka.nikname, src: defka.telephone, flex:6, id: defka.id}))
+      
+      const obj = res.map(defka => {
+        defka.weight && this.weights.push(defka.weight);
+        defka.nation && this.nations.push(defka.nation);
+        defka.hair_color && this.hairColors.push(defka.hair_color);
+        defka.location && this.locations.push(defka.location);
+        defka.age && this.ages.push(defka.age);
+        defka.height && this.heights.push(defka.height);
+        return {...defka, title: defka.nikname, src: defka.telephone, flex:6, id: defka.id}
+      });
       this.cards = obj;
+    },
+    computed: {
+      filteredGirls() {
+        return this.cards.filter(girl => {
+          if (this.selectedLocation && this.selectedLocation !== 'Не выбрано' && (girl as any).location !== this.selectedLocation) {
+            return false;
+          }
+          if (this.selectedAge && this.selectedAge !== 'Не выбрано' && (girl as any).age !== this.selectedAge) {
+            return false;
+          }
+          if (this.selectedHeight && this.selectedHeight !== 'Не выбрано' && (girl as any).height !== this.selectedHeight) {
+            return false;
+          }
+          if (this.selectedWeight && this.selectedWeight !== 'Не выбрано' && (girl as any).weight !== this.selectedWeight) {
+            return false;
+          }
+          if (this.selectedNation && this.selectedNation !== 'Не выбрано' && (girl as any).nation !== this.selectedNation) {
+            return false;
+          }
+          if (this.selectedHairColor && this.selectedHairColor !== 'Не выбрано' && (girl as any).hair_color !== this.selectedHairColor) {
+            return false;
+          }
+          return true;
+        });
+      }
     }
   })
 </script>
