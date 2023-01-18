@@ -10,7 +10,11 @@ import unauth from  '@/components/unauth.vue'
 import userAllDefki from '@/components/userView/user-all-defki.vue'
 import userDefka from '@/components/userView/user-all-defki.vue'
 import userHistory from '@/components/userView/user-history.vue'
+import pimpAllDefki from '@/components/pimpView/pimp-all-defki.vue'
+import pimpAddDefka from '@/components/pimpView/pimp-add-defka.vue'
+import hookerMyPage from '@/components/hookerView/hooker-my-page.vue'
 import { kissApi } from '@/api/authApi/kissApi';
+
 
 Vue.use(VueRouter);
 
@@ -54,6 +58,20 @@ const routes = [
   {
     path: '/pimp',
     meta: { roles: ['ADMIN'] },
+    children: [
+      {
+        path: 'invite',
+        component: pimpAddDefka
+      },
+      {
+        path: 'girls',
+        component: pimpAllDefki
+      },
+      {
+        path: 'girls/:id',
+        component: hookerMyPage
+      },
+    ],
     component: pimp,
   },
   {

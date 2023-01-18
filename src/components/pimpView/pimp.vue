@@ -46,12 +46,12 @@
             <v-list-item-title>Все дефки</v-list-item-title>
             </v-list-item>
 
-            <v-list-item @click="selectMenuItem(3)">
+            <!-- <v-list-item @click="selectMenuItem(3)">
             <v-list-item-icon>
                 <v-icon>mdi-chart-line</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Статистика</v-list-item-title>
-            </v-list-item>
+            </v-list-item> -->
 
             <v-list-item @click="logout()">
             <v-list-item-icon>
@@ -66,8 +66,9 @@
 		</div>
 		<v-container fill-height fluid class="pimp__content">
 			<pimp-add-defka v-if="activePage == 1" />
-			<pimp-all-defki v-if="activePage == 2" />
-			<pimp-statistics v-if="activePage == 3" />
+			<pimp-all-defki v-if="activePage == 2" @openDefka="open($event)"/>
+      <hooker-my-page v-if="activePage == 3"/>
+			<pimp-statistics v-if="activePage == 4" />
 		</v-container>
     </div>
 </template>
@@ -77,6 +78,7 @@
 	import pimpAddDefka from './pimp-add-defka.vue'
 	import pimpAllDefki from './pimp-all-defki.vue';
 	import pimpStatistics from './pimp-statistics.vue';
+  import hookerMyPage from '@/components/hookerView/hooker-my-page.vue'
 
   export default Vue.extend({
     name: 'pimp',
@@ -84,7 +86,8 @@
 		components: {
     pimpAddDefka,
 		pimpAllDefki,
-		pimpStatistics
+		pimpStatistics,
+    hookerMyPage,
   },
 
     data: () => ({
@@ -92,15 +95,28 @@
         group: null,
         name: 'Баттерс сточ',
 				activePage: 0,
+        defkaProps: {},
     }),
     methods: {
-			selectMenuItem(index: number){
-				this.activePage = index;
-				this.drawer = false;
-			},
       logout(){
         this.$eventBus.$emit('logout');
-      }
+      },
+      selectMenuItem(val: number){
+        if (val === 1) {
+          this.activePage = 1;
+          this.$router.push('/pimp/invite');
+        } else if (val === 2) {
+          this.activePage = 2;
+          this.$router.push('/pimp/girls');
+        }
+				this.drawer = false;
+			},
+      open(e: any){
+        this.defkaProps = {src: e.src, title: e.title};
+        this.$router.push(`/pimp/girls/${e.id}`);
+        this.activePage = 3;
+        console.log(e, e.src, e.title);
+      },
     }
   })
 </script>

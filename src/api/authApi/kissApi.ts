@@ -53,6 +53,11 @@ export class KissApi extends Api {
     return response.data;
   }
 
+  public async updateGirl(id: number,data: any): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.put<any[], any[]>(`/girls/${id}`, data).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
   public async registration(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/auth/registration',data).catch((error: AxiosError) => { throw error });
     let users: any[] = response.data;
@@ -94,6 +99,11 @@ export class KissApi extends Api {
 
   public async getPriceById(id: number): Promise<any> {
     let response: AxiosResponse<any[]> = await this.get<any[]>(`/price_list/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async updatePrice(id: number,data: any): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.put<any[], any[]>(`/price_list/${id}`, data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
 

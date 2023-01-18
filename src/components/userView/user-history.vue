@@ -1,6 +1,15 @@
 <template>
     <v-row class="pimp-add-defka__content" align="center"
       justify="center">
+    <v-dialog v-model="feedbackDialog" max-width="400">
+      <v-card>
+        <v-container>
+          <v-textarea v-model="feedback" label="Оставьте свой отзыв"></v-textarea>
+          <v-btn @click="setFeedbackToOrder(serviceId)">OK</v-btn>
+          <v-btn @click="feedbackDialog = false">Отмена</v-btn>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <p>История заказов</p>
     <v-card
     max-width="400"
@@ -26,7 +35,7 @@
                         outlined
                         rounded
                         text
-                        @click="setFeedbackToOrder(item.id)"
+                        @click="openDialog(item.id)"
                       >
                         Оставить отзыв
                       </v-btn>
@@ -77,7 +86,10 @@
     name: 'userHistory',
 
     data: () => ({
+        feedbackDialog: false,
         myLogin: '',
+        serviceId: '',
+        feedback: '',
         items: [
         {
           id: '',
@@ -126,7 +138,12 @@
         }
       },
       async setFeedbackToOrder(id: string){
-
+        
+        this.feedbackDialog = false;
+      },
+      openDialog(id: string){
+        this.serviceId = id;
+        this.feedbackDialog = true;
       }
     },
     async mounted() {
