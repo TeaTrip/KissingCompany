@@ -71,17 +71,34 @@
 			<v-divider></v-divider>
 		</v-col>
 
-		<template v-for="service in services">
+
+		<template>
+			<v-container
+				class="px-0"
+				fluid
+			>
+				<v-radio-group v-model="selectedPrice">
+					<v-radio
+						v-for="price in prices"
+						:key="price.id"
+						:label="price.label"
+						:value="price.id"
+					></v-radio>
+				</v-radio-group>
+			</v-container>
+		</template>
+
+		<!-- <template v-for="price in prices">
 			<v-col cols="12" md="12">
 				<v-checkbox
-					v-model="service.isWanted"
-					:label="service.label"
+					v-model="price.isWanted"
+					:label="price.label"
 					color="primary"
 					value="primary"
 					hide-details
 				></v-checkbox>
 			</v-col>
-		</template>
+		</template> -->
 
 
 		<v-col cols="12" md="12">
@@ -122,14 +139,15 @@
 				cols="12"
 			>
 				<v-select
-				:items="items"
+				:items="availableTimes"
+				v-model="time"
 				label="Свободное время"
 				></v-select>
 			</v-col>
 		</v-col>
 		<v-col v-if="date" cols="12" md="12">
 			<div class="user-defka__buttons">
-				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="accept = true">Подтвердить</v-btn>
+				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="book()">Подтвердить</v-btn>
 			</div>
 		</v-col>
 		<comments />
@@ -160,7 +178,10 @@
 			nickname: '',
 			dialog: false,
 			valid: false,
-			services: [] as { isWanted: boolean, label: string }[],
+			selectedPrice: 0,
+			time: '',
+			prices: [] as { isWanted: boolean, label: string, id: number}[],
+			services: [] as { startDt: string }[],
 			description: 'Люблю крепко обниматься и долго целоваться!!!!',
 			items: ['15:00', '17:00', '19:00', '20:00'],
       nameRules: [
@@ -203,6 +224,33 @@
 				this.dialog = false;
 				this.$emit('login', {userType: 0, token: 'blablabla'})
 			},
+			formattedDate() {
+				// Create a new Date object from the timestamp
+				let date = new Date(this.date);
+				// Use the getFullYear(), getMonth(), and getDate() methods to get the year, month, and day
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+				// Use the split() method to separate the selected time string into hours and minutes
+				let [hours, minutes] = this.time.split(':');
+				// Use the padStart() method to add a leading 0 to the month and day if necessary
+				let monthS = month.toString().padStart(2, '0');
+				let dayS = day.toString().padStart(2, '0');
+				// Use template literals to combine the year, month, day, hours, and minutes into the desired format
+				return `${year}-${monthS}-${dayS}T${hours}:${minutes}:00.000`
+			},
+			async book() {
+				const obj = {
+						girlId: this.$route.params.id,
+						service_id: this.selectedPrice,
+						startDt: this.formattedDate()
+				}
+				const res = await kissApi.getKissApi().postServiceHistory(obj);
+				if(res) {
+					this.accept = true;
+				}
+				console.log('time is', this.time)
+			}
 		},
 		async mounted(){
 			const id = this.$route.params.id;
@@ -216,16 +264,44 @@
 				this.nickname = res.nikname
 			};
 			const result = await kissApi.getKissApi().getPrices();
-			result.forEach(service => {
-				if(service.girlId == id){
+			result.forEach(price => {
+				if(price.girlId == id){
 					const obj = {
 						isWanted: false,
-						label: `${service.serviceName} - ${service.cost}$`
+						label: `${price.serviceName} - ${price.cost}$`,
+						id: price.id,
 					}
-					this.services.push(obj);
+					this.prices.push(obj);
 				}
 			})
-			console.log(result);
+
+			const services = await kissApi.getKissApi().getAllServicesForDefkaById(parseInt(id));
+			this.services = services;
+		},
+		computed: {
+			availableTimes() {
+				const selectedDate = new Date(this.date);
+				const startHour = 8;
+				const endHour = 21;
+				const slots = [];
+				for (let i = startHour; i < endHour; i++) {
+					let hour = i;
+					let minutes = "00";
+					let time = `${hour}:${minutes}`;
+					let isAvailable = true;
+					for (let service of this.services) {
+						let serviceDate = new Date(service.startDt);
+						if (selectedDate.getDate() === serviceDate.getDate() && selectedDate.getMonth() === serviceDate.getMonth() && selectedDate.getFullYear() === serviceDate.getFullYear() && serviceDate.getHours() === hour) {
+							isAvailable = false;
+							break;
+						}
+					}
+					if (isAvailable) {
+						slots.push(time);
+					}
+				}
+				return slots;
+			}
 		},
 		watch: {
 			photos: 'logFiles',

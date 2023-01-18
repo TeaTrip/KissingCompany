@@ -82,6 +82,17 @@ export class KissApi extends Api {
     return response.data;
   }
 
+  //services
+  public async getAllServicesForDefkaById(id: number): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/service_history/get_all_for_girl/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async postServiceHistory(data: any): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/service_history', data).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
 }
 
 export class KissApiInstance {
