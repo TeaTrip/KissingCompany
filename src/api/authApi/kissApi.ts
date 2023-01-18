@@ -93,6 +93,18 @@ export class KissApi extends Api {
     return response.data;
   }
 
+  public async getAllServicesForClienByLogin(login: string): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/service_history/get_all_for_client/${login}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async getServiceById(id: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/service_history/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  
+
 }
 
 export class KissApiInstance {
