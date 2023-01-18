@@ -5,13 +5,13 @@
     <v-row justify="center">
         <v-date-picker v-model="picker"></v-date-picker>
     </v-row>
-    <v-card v-if="picker"
+    <v-card v-if="picker && filteredOrder.length"
     max-width="400"
     class="mx-auto"
     >
         <v-container>
         <v-row dense>
-            <v-col cols="12" v-for="(item, index) in items" :key="index">
+            <v-col cols="12" v-for="(item, index) in filteredOrder" :key="index">
                 <v-card
                     :color="item.color"
                     dark
@@ -35,7 +35,8 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
   export default Vue.extend({
     name: 'hooker-service-history',
 
@@ -44,49 +45,10 @@
         items: [
         {
           color: '#1F7087',
+          timestamp: '',
           date: 'ПТ, 05 февраля 18:45',
           place: 'Кронверский просп. 49',
           service: 'Объятия',
-          client: 'Иван васильевич',
-          price: '200₽',
-        },
-        {
-          color: '#1F7087',
-          date: 'СБ, 06 февраля 18:45',
-          place: 'Кронверский просп. 49',
-          service: 'Поцелуй',
-          client: 'Иван васильевич',
-          price: '200₽',
-        },
-        {
-          color: '#1F7087',
-          date: 'ВС, 07 февраля 18:45',
-          place: 'Кронверский просп. 49',
-          service: 'Поцелуй (с языком)',
-          client: 'Иван васильевич',
-          price: '200₽',
-        },
-        {
-          color: '#1F7087',
-          date: 'ПН, 08 февраля 18:45',
-          place: 'Лиговский просп. 22',
-          service: 'Поцелуй (в щечку)',
-          client: 'Иван васильевич',
-          price: '200₽',
-        },
-        {
-          color: '#1F7087',
-          date: 'ВТ, 09 февраля 18:45',
-          place: 'Невский просп. 47',
-          service: 'Объятия',
-          client: 'Иван васильевич',
-          price: '200₽',
-        },
-        {
-          color: '#1F7087',
-          date: 'СР, 09 февраля 18:45',
-          place: 'Кожевенная 18',
-          service: 'Поцелуй (с языком)',
           client: 'Иван васильевич',
           price: '200₽',
         },
@@ -95,13 +57,44 @@
 
     methods: {
         changeDay(){
-            this.items.forEach(item => {
-                item.date = this.picker;
-            })
             console.log(this.picker);
         }
     },
-
+    async mounted(){
+      this.items = [];
+      const defka = await kissApi.getKissApi().getGirlSelf();
+      const service = await kissApi.getKissApi().getAllServicesForDefkaById(defka.id);
+      for(const info of service){
+        const [price, user] = await Promise.all([
+          kissApi.getKissApi().getPriceById(info.serviceId),
+          kissApi.getKissApi().getUserByUsername(info.username)
+        ]);
+        let date = new Date(info.startDt);
+        let dateString = date.toISOString().slice(0, 19).replace('T', ' ').substring(0, 16);
+        const obj = {
+          color: '#1F7087',
+          timestamp: info.startDt,
+          date: dateString,
+          place: defka.location,
+          service: price.serviceName,
+          client: `${user.firstName} ${user.secondName}`,
+          price: `${info.totalCost}$`,
+        }
+        this.items.push(obj);
+      }
+    },
+    computed: {
+      filteredOrder(){
+        return this.items.filter(item => {
+        const orderDate = new Date(item.timestamp);
+        const pickerDate = new Date(this.picker);
+        return (
+          orderDate.getDate() === pickerDate.getDate() &&
+          orderDate.getMonth() === pickerDate.getMonth() &&
+          orderDate.getFullYear() === pickerDate.getFullYear()
+        );
+      })}
+    },
     watch: {
         picker: 'changeDay'
     }
