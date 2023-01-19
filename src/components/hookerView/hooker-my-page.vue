@@ -10,8 +10,10 @@
             <v-img
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="200px"
-              src="https://southpark.cc-fan.tv/characters/14.jpg"
+              height="300px"
+              width="400px"
+              contain
+              :src="avatarSrc"
             >
               <v-card-title v-text="nickname"></v-card-title>
             </v-img>
@@ -105,7 +107,38 @@
 					></v-radio>
 				</v-radio-group>
 			</v-container> -->
-    <v-col cols="12" md="12">
+      <v-col cols="12" md="12">
+        <p>Фотографии</p>
+        <v-divider></v-divider>
+      </v-col>
+
+      <v-carousel :height="500" :width="400" :hide-delimiters="false" :hide-controls="true" :cycle="true">
+        <v-carousel-item v-for="(photo, index) in photos" :key="index">
+          <v-img :height="500" :width="400" contain :src="photo.src"></v-img>
+        </v-carousel-item>
+      </v-carousel>
+
+      <v-col cols="12" md="12" >
+        <v-file-input
+          accept="image/*"
+          v-model="avatar"
+          label="Аватар профиля"
+          placeholder="Аватар профиля"
+          prepend-icon="mdi-camera"
+        ></v-file-input>
+        </v-col>
+      <v-col cols="12" md="12">
+
+        <v-col cols="12" md="12">
+					<v-file-input
+						v-model="photosToUpload"
+						accept="image/*"
+						label="Добавьте несколько фотографий"
+						multiple
+						filled
+						prepend-icon="mdi-camera"
+					></v-file-input>
+				</v-col>
 
       <v-btn class="user-defka__grid"  color="error" @click="save()">Сохранить</v-btn>
 
@@ -119,12 +152,14 @@
 <script lang="ts">
   import Vue from 'vue'
   import { kissApi } from '@/api/authApi/kissApi';
+
   export default Vue.extend({
     name: 'hookerMyPage',
 
     data: () => ({
         girlId: 0,
         dialog: false,
+        avatar: '',
         inviteLink: '',
         age: 0,
         height: 0,
@@ -139,8 +174,10 @@
         valid: false,
         selectedPrice: 0,
         deletedIds: [] as number[],
-
+        avatarSrc: '',
         prices: [] as { isWanted: boolean, label: string, id: number, cost: number}[],
+        photos: [] as {src: string}[],
+        photosToUpload: [],
     }),
     methods: {
       deletePrice(id: number) {
@@ -170,11 +207,40 @@
           }
           const res = await kissApi.getKissApi().updatePrice(price.id, obj);
         }
+
+        if(this.avatar){
+          let photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true);
+          if(photos.length){
+            await kissApi.getKissApi().deletePhotoById(photos[0].id);
+          }
+          const formData = new FormData();
+          formData.append('image', this.avatar)
+          await kissApi.getKissApi().postGirlPhoto(formData, true);
+          photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true);
+          if(photos.length){
+            this.avatarSrc = await kissApi.getKissApi().getPhoto(photos[0].id);
+          }
+          this.$emit('updateAvatar', this.avatarSrc);
+        }
+        if(this.photosToUpload.length){
+          for(const photo of this.photosToUpload){
+            const formData = new FormData();
+            formData.append('image', photo)
+            await kissApi.getKissApi().postGirlPhoto(formData);
+          }
+          this.updatePhotos();
+        }
       },
       addService(){
 
       },
-
+      async updatePhotos(){
+        const photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId);
+        for(const photo of photos){
+          const src = await kissApi.getKissApi().getPhoto(photo.id);
+          this.photos.push({src: src})
+        }
+      }
     },
     async mounted(){
       let id = 0;
@@ -187,6 +253,12 @@
       }
 
       this.girlId = id;
+
+      const photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true);
+      if(photos.length){
+        this.avatarSrc = await kissApi.getKissApi().getPhoto(photos[0].id);
+      }
+
 			const res = await kissApi.getKissApi().getDefka(id);
 			if(res){
 				this.age = res.age;
@@ -209,7 +281,8 @@
 					}
 					this.prices.push(obj);
 				}
-			})
+			});
+      this.updatePhotos();
 		},
   })
 </script>

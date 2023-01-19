@@ -168,6 +168,56 @@ export class KissApi extends Api {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/app_feedback', data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
+
+  public async getAvgRatingById(id: number): Promise<number> {
+    let response: AxiosResponse<any> = await this.get<any[]>(`/feedback/avg/${id}`).catch((error: AxiosError) => { throw error });
+    if(response.data.stars_avg === "Infinity"){
+      return 0
+    }
+    else {
+      return response.data.stars_avg
+    }
+  }
+
+  //photos
+  public async postGirlPhoto(data: any, isAvatar?: boolean): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.post<any[], any[]>(`/girls_photos${isAvatar ? '?is_profile_photo=true' : '?is_profile_photo=false'}`, data, {
+      headers: {
+          'Content-Type': 'multipart/form-data'
+      }}).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async getPhoto(id: number): Promise<string> {
+    let data = new FormData();
+    let response: AxiosResponse<Blob> = await this.get<Blob>(`/girls_photos/download_image/${id}`, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json, text/plain, */*'
+      },
+      responseType: 'blob',
+      data: data
+    }).catch((error: AxiosError) => { throw error });
+    let reader = new FileReader();
+    reader.readAsDataURL(response.data); // конвертирует Blob в base64 и вызывает onload
+    return new Promise((resolve, reject) => {
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+    });
+  }
+
+  public async getGirlPhotosById(id: number, isAvatar?: boolean): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/girls_photos/${id}${isAvatar ? '?is_profile_photo=true' : '?is_profile_photo=false'}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async deletePhotoById(id: number): Promise<any[]> {
+    let response: AxiosResponse<any[]> = await this.delete<any[]>(`/girls_photos/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
 }
 
 export class KissApiInstance {

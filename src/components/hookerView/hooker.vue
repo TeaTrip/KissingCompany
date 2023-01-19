@@ -16,7 +16,7 @@
         <v-container class="red darken-1 pimp__substrate" >
             <v-avatar size="64">
                 <v-img ratio="1"
-                    src="http://spfan.ucoz.ru/_nw/0/27869.jpg"
+                    :src="avatarSrc"
                     alt="Венди>"
                 />
             </v-avatar>
@@ -66,7 +66,7 @@
 		<div class="pimp__content">
 		</div>
 		<v-container fill-height fluid class="pimp__content">
-			<hooker-my-page v-if="activePage == 1" />
+			<hooker-my-page @updateAvatar="avatarSrc=$event" v-if="activePage == 1" />
 			<hooker-schedule v-if="activePage == 2" />
       <hooker-service-history v-if="activePage == 3"/>
 		</v-container>
@@ -74,7 +74,8 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { kissApi } from '@/api/authApi/kissApi';
+import Vue from 'vue'
 	import hookerMyPage from './hooker-my-page.vue';
   import hookerSchedule from './hooker-schedule.vue';
   import hookerServiceHistory from './hooker-service-history.vue';
@@ -91,6 +92,8 @@
     data: () => ({
         drawer: false,
         group: null,
+        girlId: 0,
+        avatarSrc: '',
         name: 'Венди Тестабургер',
 				activePage: 0,
     }),
@@ -102,6 +105,13 @@
       logout(){
         this.$eventBus.$emit('logout');
       }
+    },
+    async mounted() {
+      const res = await kissApi.getKissApi().getGirlSelf();
+      this.name = res.nikname;
+      this.girlId = res.id;
+      const photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true)
+      this.avatarSrc = await kissApi.getKissApi().getPhoto(photos[0].id);
     }
   })
 </script>

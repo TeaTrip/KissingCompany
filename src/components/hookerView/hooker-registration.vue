@@ -188,7 +188,7 @@
 
 				<v-col cols="12" md="12">
 					<v-file-input
-						v-model="photos"
+						v-model="photosToUpload"
 						accept="image/*"
 						label="Добавьте несколько фотографий"
 						multiple
@@ -196,7 +196,7 @@
 						prepend-icon="mdi-camera"
 					></v-file-input>
 				</v-col>
-				<template v-if="photos.length > 1">
+				<template v-if="photosToUpload.length > 1">
 					<v-col   :key="index" cols="4" v-for="(url, index) in urlPhotos" class="d-flex child-flex">
 						<v-img :src="url.string" aspect-ratio="1" class="grey lighten-2">
 							<template v-slot:placeholder>
@@ -241,6 +241,7 @@
     },
     name: 'hookerRegistration',
     data: () => ({
+		avatar: '',
 		password: '',
 		age: '',
 		nation: '',
@@ -271,6 +272,7 @@
 			}
 		],
 		photos: [],
+		photosToUpload: [],
 		urlPhotos: [{string: ''}],
 		profileName: '',
     }),
@@ -286,7 +288,7 @@
 			logFiles(){
 				console.log(this.photos);
 				this.urlPhotos = [];
-				this.photos.forEach(photo => {
+				this.photosToUpload.forEach(photo => {
 					let urlCreator = window.URL || window.webkitURL;
 					const imageUrl = urlCreator.createObjectURL(photo);
 					this.urlPhotos.push({string: imageUrl});
@@ -332,6 +334,18 @@
               kissApi.getKissApi().createPrice(obj);
             }
           })
+				if(this.avatar){
+          const formData = new FormData();
+          formData.append('image', this.avatar)
+          await kissApi.getKissApi().postGirlPhoto(formData, true);
+        }
+        if(this.photosToUpload.length){
+          for(const photo of this.photosToUpload){
+            const formData = new FormData();
+            formData.append('image', photo)
+            await kissApi.getKissApi().postGirlPhoto(formData);
+          }
+        }
 
           kissApi.setRole('HOOKER');
           this.$router.push('/hooker');

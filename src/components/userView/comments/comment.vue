@@ -4,7 +4,7 @@
         elevation="2"
         outlined
       >
-        <v-card-titile>{{name}}</v-card-titile>
+        <v-card-title>{{name}}</v-card-title>
         <v-card-text>{{text}}</v-card-text>
         <v-card-text>Оценка: {{stars}}/5</v-card-text>
       </v-card>
@@ -19,7 +19,7 @@
         props: {
           name: String,
           text: String,
-          stars: String,
+          stars: Number,
         },
         data: () => ({
             

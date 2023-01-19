@@ -137,6 +137,7 @@
         >
           <v-card>
             <v-img
+              contain
               :src="card.src"
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -147,20 +148,7 @@
             </v-img>
 
             <v-card-actions>
-                <p align="center">4.5/5</p>
-              <v-spacer></v-spacer>
-
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-bookmark</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
+                <p align="center">{{card.stars}}/5 звёзд</p>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -198,14 +186,7 @@ import Vue from 'vue'
       kissWithTongue: false,
       filter: false,
       filters: [],
-      cards: [
-        { title: '', src: '', flex: 6 },
-        // { title: 'Шелли Марш', src: 'https://southpark.cc-fan.tv/characters/14.jpg', flex: 6 },
-        // { title: 'Ребекка Котсвальд', src: 'https://southpark.cc-fan.tv/characters/19.jpg', flex: 6 },
-        // { title: 'Венди Тестабургер', src: 'https://southpark.cc-fan.tv/characters/7.jpg', flex: 6 },
-        // { title: 'Николь Дэниелс', src: 'https://e7.pngegg.com/pngimages/501/252/png-clipart-little-einstein-character-illustration-south-park-nichole-daniels-at-the-movies-cartoons.png', flex: 6 },
-        // { title: 'Хайди тёрнер', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH_QpXG6SD8-Xk5NJUevVfs6UC0CY6e7GWmRaLZM4dRo1tbxSdeu8xBVeVWBWtGY4vGmo&usqp=CAU', flex: 6 },
-      ],
+      cards: [] as any[],
       cardsReserve: [{title: 's', src: 's', flex: 6}],
     }),
 
@@ -221,17 +202,21 @@ import Vue from 'vue'
     },
     async mounted() {
       const res = await kissApi.getKissApi().getAllDefki();
-      
-      const obj = res.map(defka => {
+      for(const defka of res){
         defka.weight && this.weights.push(defka.weight);
         defka.nation && this.nations.push(defka.nation);
         defka.hair_color && this.hairColors.push(defka.hair_color);
         defka.location && this.locations.push(defka.location);
         defka.age && this.ages.push(defka.age);
         defka.height && this.heights.push(defka.height);
-        return {...defka, title: defka.nikname, src: defka.telephone, flex:6, id: defka.id}
-      });
-      this.cards = obj;
+        const rating = await kissApi.getKissApi().getAvgRatingById(defka.id);
+        const avatar = await kissApi.getKissApi().getGirlPhotosById(defka.id, true)
+        let avatarSrc = ''
+        if(avatar.length){
+          avatarSrc = await kissApi.getKissApi().getPhoto(avatar[0].id);
+        }
+        this.cards.push({...defka, title: defka.nikname, src: avatarSrc, stars: rating, flex:6, id: defka.id})
+      }
     },
     computed: {
       filteredGirls() {

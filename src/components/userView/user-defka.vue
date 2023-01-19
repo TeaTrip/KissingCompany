@@ -7,11 +7,13 @@
           cols="12"
           md="12"
         >
-            <v-img
+						<v-img
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="200px"
-              src="https://southpark.cc-fan.tv/characters/14.jpg"
+              height="300px"
+              width="400px"
+              contain
+              :src="avatarSrc"
             >
               <v-card-title v-text="nickname"></v-card-title>
             </v-img>
@@ -54,7 +56,11 @@
 		</v-col>
 
 
-
+		<v-carousel :height="500" :width="400" :hide-delimiters="false" :cycle="true">
+			<v-carousel-item v-for="(photo, index) in photos" :key="index">
+				<v-img :height="500" :width="400" contain :src="photo.src"></v-img>
+			</v-carousel-item>
+		</v-carousel>
 		<!-- <v-col
           cols="12"
           md="12"
@@ -168,6 +174,7 @@
 	},
 
     data: () => ({
+			avatarSrc: '',
 			girlId: 0,
 			age: 0,
 			height: 0,
@@ -203,22 +210,12 @@
 				price: '',
 				}
 			],
-			photos: [],
-			urlPhotos: [{string: ''}]
+			photos: [] as any[],
     }),
 
 		methods: {
 			addNewService(){
 				this.dialog = true;
-			},
-			logFiles(){
-				console.log(this.photos);
-				this.urlPhotos = [];
-				this.photos.forEach(photo => {
-					let urlCreator = window.URL || window.webkitURL;
-					const imageUrl = urlCreator.createObjectURL(photo);
-					this.urlPhotos.push({string: imageUrl});
-				})
 			},
 			register(){
 				// api register call
@@ -251,7 +248,20 @@
 					this.accept = true;
 				}
 				console.log('time is', this.time)
-			}
+			},
+			async setAvatar(){
+				const photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true);
+				if(photos.length){
+					this.avatarSrc = await kissApi.getKissApi().getPhoto(photos[0].id);
+				}
+			},
+			async updatePhotos(){
+        const photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId);
+        for(const photo of photos){
+          const src = await kissApi.getKissApi().getPhoto(photo.id);
+          this.photos.push({src: src})
+        }
+      }
 		},
 		async mounted(){
 			const id = this.$route.params.id;
@@ -279,6 +289,9 @@
 
 			const services = await kissApi.getKissApi().getAllServicesForDefkaById(parseInt(id));
 			this.services = services;
+
+			this.setAvatar();
+			this.updatePhotos();
 		},
 		computed: {
 			availableTimes() {
@@ -304,10 +317,7 @@
 				}
 				return slots;
 			}
-		},
-		watch: {
-			photos: 'logFiles',
-		}       
+		},     
   })
 </script>
 
