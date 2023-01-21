@@ -231,11 +231,12 @@
 				let day = date.getDate();
 				// Use the split() method to separate the selected time string into hours and minutes
 				let [hours, minutes] = this.time.split(':');
+				let hoursS = hours.toString().padStart(2, '0');
 				// Use the padStart() method to add a leading 0 to the month and day if necessary
 				let monthS = month.toString().padStart(2, '0');
 				let dayS = day.toString().padStart(2, '0');
 				// Use template literals to combine the year, month, day, hours, and minutes into the desired format
-				return `${year}-${monthS}-${dayS}T${hours}:${minutes}:00.000`
+				return `${year}-${monthS}-${dayS}T${hoursS}:${minutes}:00.000`
 			},
 			async book() {
 				const obj = {
