@@ -14,6 +14,15 @@
       <v-col cols="12" md="12">
         <v-btn @click="isRegistration = true">Зарегестрироваться</v-btn>
       </v-col>
+      <v-container  v-if="warning">
+        <v-alert
+          dense
+          type="warning"
+          transition="scale-transition"
+        >
+          Неправильный логин или пароль
+        </v-alert>
+      </v-container>
     </v-container>
   </v-container>
 </template>
@@ -25,7 +34,7 @@
   import Vue from 'vue'
   import router from '@/router';
 
-  export default Vue.extend({
+  export default Vue.extend({ 
     name: 'auth',
     components: {
       registration
@@ -38,6 +47,7 @@
       password: '',
       login: '',
       isRegistration: false,
+      warning: false,
     }),
     methods: {
       async authorize(cred: {username: string, password: string}){
@@ -47,33 +57,35 @@
               ...cred
             },
           }
-        kissApi.setNewConfig(newConfig);
-        const response = await kissApi.getKissApi().login();
-        if(response.roleName){
-          window.localStorage.setItem('auth', JSON.stringify(cred));
-          const redirectFrom = this.$route.query.redirectFrom;
-          if (typeof redirectFrom === 'string' && redirectFrom.startsWith('/hooker-registration')) {
-            kissApi.setRole('USER');
-            this.$router.push(redirectFrom);
+        try{
+          kissApi.setNewConfig(newConfig);
+          const response = await kissApi.getKissApi().login();
+          if(response.roleName){
+            window.localStorage.setItem('auth', JSON.stringify(cred));
+            const redirectFrom = this.$route.query.redirectFrom;
+            if (typeof redirectFrom === 'string' && redirectFrom.startsWith('/hooker-registration')) {
+              kissApi.setRole('USER');
+              this.$router.push(redirectFrom);
+              return;
+            }
+            const role = response.roleName
+            if(role === "USER"){
+              kissApi.setRole('USER');
+              this.$router.push('/user');
+            }
+            if(role === "HOOKER"){
+              kissApi.setRole('HOOKER');
+              this.$router.push('/hooker');
+            }
+            if(role === "ADMIN"){
+              kissApi.setRole('ADMIN');
+              this.$router.push('/pimp');
+            }
             return;
           }
-          const role = response.roleName
-          if(role === "USER"){
-            kissApi.setRole('USER');
-            this.$router.push('/user');
-          }
-          if(role === "HOOKER"){
-            kissApi.setRole('HOOKER');
-            this.$router.push('/hooker');
-          }
-          if(role === "ADMIN"){
-            kissApi.setRole('ADMIN');
-            this.$router.push('/pimp');
-          }
-
-          return;
         }
-        else {
+        catch(e: any){
+          this.warning = true;
           console.log('something went wrog');
         }
       }

@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="12">
-      <v-container>
+      <v-container v-if="canSend">
         <v-textarea v-model="feedback" label="Оставьте свой отзыв"></v-textarea>
         <v-container class="rating">
           <v-icon v-for="n in 5" :key="n" @mouseover="hover(n)" @click="select(n)" :color="getColor(n)">
@@ -9,10 +9,11 @@
         </v-container>
         <v-btn @click="sendFeedback()">Отправить</v-btn>
       </v-container>
-      <v-divider></v-divider>
+      <h3 v-else>Можно оставить только 1 отзыв!</h3>
+      <v-container>
+        <v-divider></v-divider>
+      </v-container>
       <p>Отзывы о приложении</p>
-
-
       <v-col v-for="comment in comments">
         <comment :name="comment.username" :text="comment.comment" :stars="parseInt(comment.stars)" />
       </v-col>
@@ -36,6 +37,7 @@
           }
         },
       data: () => ({
+          canSend: false,
           selected: 0,
           hovering: 0,
           heartColor: ['#ccc', '#ccc', '#ccc', '#ccc', '#ccc'],
@@ -83,6 +85,14 @@
         },
         async updateFeedbacks(){
           const res = await kissApi.getKissApi().getAppFeedbacks();
+          const index = res.findIndex(obj => obj.username == this.username);
+          if(index === -1){
+            this.canSend = true;
+          }
+          else {
+            this.canSend = false;
+          }
+          //this.canSend = res.findIndex(obj => obj.username == this.username) === -1 ? true : false;
           this.comments = res;
         }
       },

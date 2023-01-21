@@ -12,123 +12,12 @@
     <v-container fluid>
       <v-row dense>
         <v-container v-if="filter">
-          <!-- <v-col cols="12" md="12">
-            <p>Предоставляемые услуги</p>
-            <v-divider></v-divider>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="kissWithTongue"
-              label="Поцелуй (с языком)"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="kissLight"
-              label="Поцелуй (в щёку)"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="hugs"
-              label="Объятия"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <p>Цена</p>
-            <v-divider></v-divider>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-row justify="space-between">
-              <v-text-field
-                v-model="from"
-                type="number"
-                label="От"
-            ></v-text-field>
-            <v-text-field
-                v-model="to"
-                type="number"
-                label="До"
-            ></v-text-field>
-          </v-row>
-
-          <v-col cols="12" md="12">
-            <p>Внешние черты</p>
-            <v-divider></v-divider>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="blonde"
-              label="Блондинки"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="brunet"
-              label="Брюнетки"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-
-          <v-col cols="12" md="12">
-            <v-checkbox
-              v-model="shaten"
-              label="Шатенки"
-              color="primary"
-              value="primary"
-              hide-details
-            ></v-checkbox>
-          </v-col> -->
-          <!-- <template v-for="filter in filters">
-            <v-col cols="12" md="12">
-              <v-col class="d-flex" cols="12">
-                <v-select
-                :items="availableTimes"
-                v-model="time"
-                label="Свободное время"
-                ></v-select>
-              </v-col>
-            </v-col>
-          </template> -->
-
           <v-select v-model="selectedLocation" :items="locations" label="Адрес"></v-select>
           <v-select v-model="selectedAge" :items="ages" label="Возраст"></v-select>
           <v-select v-model="selectedHeight" :items="heights" label="Рост"></v-select>
           <v-select v-model="selectedWeight" :items="weights" label="Вес"></v-select>
           <v-select v-model="selectedNation" :items="nations" label="Национальность"></v-select>
-          <v-select v-model="selectedHairColor" :items="hairColors" label="Цвет волос"></v-select>
-
-
-          <!-- <v-btn
-            :color="'error'"
-            text
-            @click="applyFilter()"
-          >
-            {{"Применить"}}
-          </v-btn> -->
-
-          
+          <v-select v-model="selectedHairColor" :items="hairColors" label="Цвет волос"></v-select>  
         </v-container>
         <v-col
           v-for="card in filteredGirls"

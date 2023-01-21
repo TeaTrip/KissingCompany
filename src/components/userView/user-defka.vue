@@ -3,10 +3,7 @@
 	<h1 v-if="accept">Успешно!</h1>
     <v-container v-else>
       <v-row>
-        <v-col
-          cols="12"
-          md="12"
-        >
+        <v-col cols="12" md="12">
 						<v-img
               class="white--text align-end"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -17,42 +14,20 @@
             >
               <v-card-title v-text="nickname"></v-card-title>
             </v-img>
-			<!-- <h3>
-				4.5/5
-			</h3> -->
         </v-col>
-		<v-col
-          cols="12"
-          md="12"
-        >
-			<v-card
-			class="d-flex justify-space-around mb-6"
-			flat
-			tile
-			>
-			<h3>Возраст:</h3>
-			<h3>{{age}}</h3>
-			</v-card>
-			<v-card
-			class="d-flex justify-space-around mb-6"
-			flat
-			tile
-			>
-			<h3>Рост:</h3>
-			<h3>{{height}}</h3>
-			</v-card>
-			<v-card class="d-flex justify-space-around mb-6" flat tile>
+		<v-col cols="12" md="12" >
+			<div class="user-defka__info">
+				<h3>Возраст:</h3>
+				<h3>{{age}}</h3>
+				<h3>Рост:</h3>
+				<h3>{{height}}</h3>
 				<h3>Цвет волос:</h3>
 				<h3>{{hairColor}}</h3>
-			</v-card>
-			<v-card class="d-flex justify-space-around mb-6" flat tile>
 				<h3>Национальность:</h3>
 				<h3>{{nation}}</h3>
-			</v-card>
-			<v-card class="d-flex justify-space-around mb-6" flat tile>
 				<h3>Телефон:</h3>
 				<h3>{{telephone}}</h3>
-			</v-card>
+			</div>
 		</v-col>
 
 
@@ -139,23 +114,33 @@
             </v-card-actions>
         </v-card>
 		</v-dialog>
+		
 		<v-col v-if="date" cols="12" md="12">
-			<v-col
-				class="d-flex"
-				cols="12"
-			>
+			<div>
+				<p>{{date}}</p>
+			</div>
+			<div>
 				<v-select
 				:items="availableTimes"
 				v-model="time"
 				label="Свободное время"
 				></v-select>
-			</v-col>
+			</div>
 		</v-col>
 		<v-col v-if="date" cols="12" md="12">
 			<div class="user-defka__buttons">
 				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="book()">Подтвердить</v-btn>
 			</div>
 		</v-col>
+		<v-container>
+			<v-alert
+				v-if="warning"
+				dense
+				type="warning"
+			>
+				Выберите время и услугу
+			</v-alert>
+		</v-container>
 		<comments :girlId="girlId" />
     </v-container>
   </div>
@@ -174,6 +159,7 @@
 	},
 
     data: () => ({
+			warning: false,
 			avatarSrc: '',
 			girlId: 0,
 			age: 0,
@@ -239,14 +225,20 @@
 				return `${year}-${monthS}-${dayS}T${hoursS}:${minutes}:00.000`
 			},
 			async book() {
-				const obj = {
-						girlId: this.$route.params.id,
-						service_id: this.selectedPrice,
-						startDt: this.formattedDate()
+				if(this.selectedPrice){
+					const obj = {
+							girlId: this.$route.params.id,
+							service_id: this.selectedPrice,
+							startDt: this.formattedDate()
+					}
+					const res = await kissApi.getKissApi().postServiceHistory(obj);
+					if(res) {
+						this.$router.push('/user/history/' + res.id)
+						this.accept = true;
+					}
 				}
-				const res = await kissApi.getKissApi().postServiceHistory(obj);
-				if(res) {
-					this.accept = true;
+				else {
+					this.warning = true;
 				}
 				console.log('time is', this.time)
 			},
@@ -262,37 +254,40 @@
           const src = await kissApi.getKissApi().getPhoto(photo.id);
           this.photos.push({src: src})
         }
-      }
+      },
+			async main(){
+				const id = this.$route.params.id;
+				this.girlId = parseInt(id);
+				const res = await kissApi.getKissApi().getDefka(parseInt(id));
+				if(res){
+					this.age = res.age;
+					this.height = res.height;
+					this.hairColor = res.hair_color;
+					this.nation = res.nation;
+					this.telephone = res.telephone;
+					this.nickname = res.nikname
+				};
+				const result = await kissApi.getKissApi().getPrices();
+				result.forEach(price => {
+					if(price.girlId == id){
+						const obj = {
+							isWanted: false,
+							label: `${price.serviceName} - ${price.cost}$`,
+							id: price.id,
+						}
+						this.prices.push(obj);
+					}
+				})
+
+				const services = await kissApi.getKissApi().getAllServicesForDefkaById(parseInt(id));
+				this.services = services;
+
+				this.setAvatar();
+				this.updatePhotos();
+			}
 		},
 		async mounted(){
-			const id = this.$route.params.id;
-			this.girlId = parseInt(id);
-			const res = await kissApi.getKissApi().getDefka(parseInt(id));
-			if(res){
-				this.age = res.age;
-				this.height = res.height;
-				this.hairColor = res.hair_color;
-				this.nation = res.nation;
-				this.telephone = res.telephone;
-				this.nickname = res.nikname
-			};
-			const result = await kissApi.getKissApi().getPrices();
-			result.forEach(price => {
-				if(price.girlId == id){
-					const obj = {
-						isWanted: false,
-						label: `${price.serviceName} - ${price.cost}$`,
-						id: price.id,
-					}
-					this.prices.push(obj);
-				}
-			})
-
-			const services = await kissApi.getKissApi().getAllServicesForDefkaById(parseInt(id));
-			this.services = services;
-
-			this.setAvatar();
-			this.updatePhotos();
+			this.main()
 		},
 		computed: {
 			availableTimes() {
@@ -318,7 +313,13 @@
 				}
 				return slots;
 			}
-		},     
+		},
+		watch: {
+			'$route.params.id': function (newVal, oldVal) {
+				console.log(`The id has changed from ${oldVal} to ${newVal}`)
+				this.main()
+			}
+		}     
   })
 </script>
 
@@ -336,6 +337,12 @@
 	}
 	&__grid {
 			grid-column: 1/2;
+	}
+	&__info {
+		display: grid;
+		grid-template-columns: min-content auto;
+		justify-items: start;
+    grid-gap: 5px;
 	}
 }
 </style>

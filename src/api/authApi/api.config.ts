@@ -1,7 +1,7 @@
 import * as qs from "qs";
 import { PathLike } from "fs";
 
-export const API_BASE_URL = "http://localhost:3233/api/";
+export const API_BASE_URL = "http://localhost:33770/api/";
 //export const API_BASE_URL = "http://192.168.1.33:3233/api/";
 
 export const apiConfig = {

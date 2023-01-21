@@ -10,6 +10,7 @@ import unauth from  '@/components/unauth.vue'
 import userAllDefki from '@/components/userView/user-all-defki.vue'
 import userDefka from '@/components/userView/user-all-defki.vue'
 import userHistory from '@/components/userView/user-history.vue'
+import userHistoryDetail from '@/components/userView/user-history-detail.vue'
 import pimpAllDefki from '@/components/pimpView/pimp-all-defki.vue'
 import pimpAddDefka from '@/components/pimpView/pimp-add-defka.vue'
 import hookerMyPage from '@/components/hookerView/hooker-my-page.vue'
@@ -54,6 +55,10 @@ const routes = [
         component: userHistory
       },
       {
+        path: 'history/:id',
+        component: userHistoryDetail
+      },
+      {
         path: 'appfeedback',
         component: userFeedbacks,
       },
@@ -87,7 +92,8 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 });
 
 router.beforeEach((to, from, next) => {

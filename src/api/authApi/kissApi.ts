@@ -113,7 +113,7 @@ export class KissApi extends Api {
     return response.data;
   }
 
-  public async postServiceHistory(data: any): Promise<any[]> {
+  public async postServiceHistory(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/service_history', data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
@@ -149,13 +149,13 @@ export class KissApi extends Api {
   }
 
   //feedbacks
-  public async postGirlFeedback(data: any): Promise<any[]> {
+  public async postGirlFeedback(data: any): Promise<any> {
     let response: AxiosResponse<any[]> = await this.post<any[], any[]>('/feedback', data).catch((error: AxiosError) => { throw error });
     return response.data;
   }
 
   public async getFeedbackByGirlId(id: number): Promise<any[]> {
-    let response: AxiosResponse<any[]> = await this.get<any[]>(`/feedback/${id}`).catch((error: AxiosError) => { throw error });
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/feedback/girl/${id}`).catch((error: AxiosError) => { throw error });
     return response.data;
   }
 
@@ -215,6 +215,23 @@ export class KissApi extends Api {
 
   public async deletePhotoById(id: number): Promise<any[]> {
     let response: AxiosResponse<any[]> = await this.delete<any[]>(`/girls_photos/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  public async getSlutCoins(): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>('/cashback').catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
+  //payment
+
+  public async getPaymentLink(orderId: number, coinsToUse?: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/payment/get_link/${orderId}${coinsToUse ? '?coins_to_use=' + coinsToUse : ''}`);
+    return response.data;
+  }
+
+  public async checkPayment(billId: string): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.get<any[]>(`/payment/info/${billId}`).catch((error: AxiosError) => { throw error });
     return response.data;
   }
 

@@ -21,6 +21,15 @@
 			<v-col cols="12" md="12">
 				<v-btn @click="$emit('isLogin')">Назад</v-btn>
 			</v-col>
+			<v-container  v-if="warning">
+        <v-alert
+          dense
+          type="warning"
+          transition="scale-transition"
+        >
+          Данный логин занят
+        </v-alert>
+      </v-container>
     </v-container>
   </template>
   
@@ -36,6 +45,7 @@ import { kissApi } from '@/api/authApi/kissApi';
 				(value: any) => !!value || 'Необходимое поле.',
 				(value: any) => (value && value.length >= 3) || 'Минимум 5 символов',
 			],
+			warning: false,
 			password: '',
 			login: '',
 			name: '',
@@ -51,11 +61,19 @@ import { kissApi } from '@/api/authApi/kissApi';
 					password: this.password,
 					role: "USER"
 				}
-				const response = await kissApi.getKissApi().registration(user);
-				if(response.error){
-					console.log('something going wrong');
+				try{
+					const response = await kissApi.getKissApi().registration(user);
+					if(response.error){
+						console.log('something going wrong');
+						this.warning = true;
+						return;
+					}
+				}
+				catch(e: any){
+					this.warning = true;
 					return;
 				}
+
 				this.$emit('register', {username: this.login, password: this.password})
 			}
 		}

@@ -16,17 +16,11 @@
       </v-card>
     </v-dialog>
     <p>История заказов</p>
-    <v-card
-    max-width="400"
-    class="mx-auto"
-    >
+    <v-card max-width="400" class="mx-auto" v-if="items.length" >
         <v-container>
         <v-row dense>
             <v-col cols="12" v-for="(item, index) in items" :key="index">
-                <v-card
-                    :color="item.color"
-                    dark
-                >
+                <v-card :color="item.color" dark>
                     <v-card-title class="text-h5">
                     {{item.date}}
                     </v-card-title>
@@ -35,44 +29,14 @@
                     <v-card-subtitle>Дефка:  {{item.girlname}}</v-card-subtitle>
                     <v-card-subtitle>Цена:  {{item.totalCost}}</v-card-subtitle>
                     <v-card-subtitle>Статус:  {{item.status}}</v-card-subtitle>
-                    <v-card-actions v-if="item.status == 'ENDED'">
+                    <v-card-actions>
                       <v-btn
                         outlined
                         rounded
                         text
-                        @click="openDialog(item.girlid)"
+                        @click="openOrder(item.id)"
                       >
-                        Оставить отзыв
-                      </v-btn>
-                    </v-card-actions>
-                    <v-card-actions v-if="item.status == 'APPROVED'">
-                      <v-btn
-                        outlined
-                        rounded
-                        text
-                        @click="startOrder(item.id)"
-                      >
-                        Дефка начала выполнять заказ
-                      </v-btn>
-                    </v-card-actions>
-                    <v-card-actions v-if="item.status == 'CREATED'">
-                      <v-btn
-                        outlined
-                        rounded
-                        text
-                        @click="payOrder(item.id)"
-                      >
-                        Оплатить
-                      </v-btn>
-                    </v-card-actions>
-                    <v-card-actions v-if="item.status == 'STARTED'">
-                      <v-btn
-                        outlined
-                        rounded
-                        text
-                        @click="endOrder(item.id)"
-                      >
-                        Завершить
+                        Подробнее
                       </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -80,6 +44,7 @@
         </v-row>
         </v-container>
     </v-card>
+    <h2 v-else>Пока нет заказов, можно выбрать дефку на странице 'Все дефки'</h2>
     </v-row>
 </template>
 
@@ -181,6 +146,10 @@
         } else {
           return 'grey'
         }
+      },
+      openOrder(id: string) {
+        console.log('this try emit');
+        this.$emit('openOrder', id);
       }
     },
     async mounted() {
