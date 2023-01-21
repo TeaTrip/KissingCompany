@@ -14,7 +14,7 @@
 
 
       <v-col v-for="comment in comments">
-        <comment :name="comment.username" :text="comment.comment" :stars="comment.stars" />
+        <comment :name="comment.username" :text="comment.comment" :stars="parseInt(comment.stars)" />
       </v-col>
   </v-col>
 </template>
@@ -78,6 +78,8 @@
           }
           this.comments.push({...obj, username: this.username});
           kissApi.getKissApi().postAppFeedback(obj);
+          this.selected = 0;
+          this.feedback = '';
         },
         async updateFeedbacks(){
           const res = await kissApi.getKissApi().getAppFeedbacks();
