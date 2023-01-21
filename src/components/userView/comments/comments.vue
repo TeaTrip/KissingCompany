@@ -25,32 +25,23 @@ import Vue from 'vue'
           }
         },
         data: () => ({
-            comments: [
-              {username: 'Kyle',
-              comment: 'Отличная дефка! Обнимается супер!',
-              stars: '5',
-              },
-              {username: 'Erick Cartman',
-              comment: 'Всё понравилось! Лучше чем мама кайла',
-              stars: '5',
-              }
-            ]
+            comments: [] as {username: string, comment: string, stars: string}[]
         }),
         methods: {
             
-        },
-        computed: {
-          async girls() {
-            const res = await kissApi.getKissApi().getFeedbackByGirlId(this.girlId);
-            console.log(res);
-            this.comments = res;
-          }
         },
         async mounted(){
           const res = await kissApi.getKissApi().getFeedbackByGirlId(this.girlId);
           console.log(res);
           this.comments = res;
-        }
+        },
+        watch: {
+          girlId: async function () {
+            const res = await kissApi.getKissApi().getFeedbackByGirlId(this.girlId);
+            console.log(res);
+            this.comments = res;
+          }
+        },
                 
         })
   </script>
