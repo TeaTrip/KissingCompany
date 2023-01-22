@@ -31,13 +31,9 @@
         </v-row>
         </v-container>
     </v-card>
-    <v-card
-    max-width="400"
-    class="mx-auto"
-    v-else
-    >
+    <v-container v-else >
       <h1>Записей за выбранный период нет</h1>
-    </v-card>
+    </v-container>
     </v-row>
 </template>
 
@@ -78,7 +74,7 @@
       const defka = await kissApi.getKissApi().getGirlSelf();
       const service = await kissApi.getKissApi().getAllServicesForDefkaById(defka.id);
       for(const info of service){
-        if(info.status === 'APPROVED'){
+        if(info.status !== 'APPROVED' && info.status !== 'ENDED'){
           const [price, user] = await Promise.all([
             kissApi.getKissApi().getPriceById(info.serviceId),
             kissApi.getKissApi().getUserByUsername(info.username)
@@ -94,7 +90,7 @@
             place: defka.location,
             service: price.serviceName,
             client: `${user.firstName} ${user.secondName}`,
-            price: `${info.totalCost}$`,
+            price: `${info.totalCost}₽`,
           }
           this.items.push(obj);
         }
@@ -118,7 +114,7 @@
               const itemDate = new Date(item.timestamp);
               const today = new Date();
               const startWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-              const endWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
+              const endWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
               return itemDate >= startWeek && itemDate <= endWeek;
             });
           case 'Текущий месяц':

@@ -15,6 +15,8 @@ import pimpAllDefki from '@/components/pimpView/pimp-all-defki.vue'
 import pimpAddDefka from '@/components/pimpView/pimp-add-defka.vue'
 import hookerMyPage from '@/components/hookerView/hooker-my-page.vue'
 import userFeedbacks from '@/components/userView/user-feedbacks.vue'
+import hookerSchedule from '@/components/hookerView/hooker-schedule.vue'
+import hookerServiceHistory from '@/components/hookerView/hooker-service-history.vue'
 import { kissApi } from '@/api/authApi/kissApi';
 
 
@@ -23,11 +25,12 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    meta: { roles: ['UNAUTH'] },
+    meta: { roles: ['UNAUTH', 'USER', 'ADMIN', 'HOOKER'] },
     component: auth,
   },
   {
     path: '/unauth',
+    meta: { roles: ['UNAUTH', 'USER', 'ADMIN', 'HOOKER'] },
     component: unauth,
   },
   {
@@ -44,22 +47,27 @@ const routes = [
     children: [
       {
         path: 'girls',
+        meta: { roles: ['USER'] },
         component: userAllDefki
       },
       {
         path: 'girls/:id',
+        meta: { roles: ['USER'] },
         component: userDefka
       },
       {
         path: 'history',
+        meta: { roles: ['USER'] },
         component: userHistory
       },
       {
         path: 'history/:id',
+        meta: { roles: ['USER'] },
         component: userHistoryDetail
       },
       {
         path: 'appfeedback',
+        meta: { roles: ['USER'] },
         component: userFeedbacks,
       },
     ],
@@ -71,14 +79,17 @@ const routes = [
     children: [
       {
         path: 'invite',
+        meta: { roles: ['ADMIN'] },
         component: pimpAddDefka
       },
       {
         path: 'girls',
+        meta: { roles: ['ADMIN'] },
         component: pimpAllDefki
       },
       {
         path: 'girls/:id',
+        meta: { roles: ['ADMIN'] },
         component: hookerMyPage
       },
     ],
@@ -88,6 +99,23 @@ const routes = [
     path: '/hooker',
     meta: { roles: ['HOOKER'] },
     component: hooker,
+    children: [
+      {
+        path: 'profile',
+        meta: { roles: ['HOOKER'] },
+        component: hookerMyPage
+      },
+      {
+        path: 'schedule',
+        meta: { roles: ['HOOKER'] },
+        component: hookerSchedule
+      },
+      {
+        path: 'history',
+        meta: { roles: ['HOOKER'] },
+        component: hookerServiceHistory
+      },
+    ],
   },
 ];
 
@@ -97,22 +125,34 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if(to.meta && to.meta.roles){
-    const allowedRoles = to.meta.roles;
-    const userRole = kissApi.getRole(); 
-    if(to.path.startsWith('/hooker-registration') && !allowedRoles.includes(userRole)){
-      next({path: '/', query: { redirectFrom: to.path }});
-      return;
-    }
+  console.log('to.path', to.path)
+  console.log('to.meta', to.meta, 'to.meta.roles', to.meta?.roles)
+  const allowedRoles = to.meta?.roles;
+  const userRole = kissApi.getRole(); 
 
-    if (allowedRoles && !allowedRoles.includes(userRole)) {
-        next({path: '/unauth', replace: true}); 
-    } else {
-        next();
-    }
-}else{
+  if(to.path === '/' && userRole === 'USER'){
+    next({path: '/user'});
+    return;
+  }
+  if(to.path === '/' && userRole === 'PIMP'){
+    next({path: '/pimp'});
+    return;
+  }
+  if(to.path === '/' && userRole === 'HOOKER'){
+    next({path: '/hooker'});
+    return;
+  }
+
+  if(to.path.startsWith('/hooker-registration') && !allowedRoles.includes(userRole)){
+    next({path: '/', query: { redirectFrom: to.path }});
+    return;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+      next({path: '/unauth', replace: true}); 
+  } else {
     next();
-}
+  }
 });
 
 export default router;

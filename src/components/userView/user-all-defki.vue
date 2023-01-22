@@ -83,11 +83,6 @@ import Vue from 'vue'
       openDefka(card: any){
           this.$emit('openDefka', card);
       },
-      applyFilter(){
-        this.filter = false;
-        this.cardsReserve = this.cards;
-        this.cards = this.cards.slice(1,3);
-      }
     },
     async mounted() {
       const res = await kissApi.getKissApi().getAllDefki();

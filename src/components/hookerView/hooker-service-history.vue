@@ -31,6 +31,9 @@
         </v-row>
         </v-container>
     </v-card>
+    <v-container v-else >
+      <h1>Записей за выбранный период нет</h1>
+    </v-container>
     </v-row>
 </template>
 
@@ -65,22 +68,24 @@ import Vue from 'vue'
       const defka = await kissApi.getKissApi().getGirlSelf();
       const service = await kissApi.getKissApi().getAllServicesForDefkaById(defka.id);
       for(const info of service){
-        const [price, user] = await Promise.all([
-          kissApi.getKissApi().getPriceById(info.serviceId),
-          kissApi.getKissApi().getUserByUsername(info.username)
-        ]);
-        let date = new Date(info.startDt);
-        let dateString = date.toISOString().slice(0, 19).replace('T', ' ').substring(0, 16);
-        const obj = {
-          color: '#1F7087',
-          timestamp: info.startDt,
-          date: dateString,
-          place: defka.location,
-          service: price.serviceName,
-          client: `${user.firstName} ${user.secondName}`,
-          price: `${info.totalCost}$`,
+        if(info.status === "ENDED"){
+          const [price, user] = await Promise.all([
+            kissApi.getKissApi().getPriceById(info.serviceId),
+            kissApi.getKissApi().getUserByUsername(info.username)
+          ]);
+          let date = new Date(info.startDt);
+          let dateString = date.toISOString().slice(0, 19).replace('T', ' ').substring(0, 16);
+          const obj = {
+            color: '#1F7087',
+            timestamp: info.startDt,
+            date: dateString,
+            place: defka.location,
+            service: price.serviceName,
+            client: `${user.firstName} ${user.secondName}`,
+            price: `${info.totalCost}₽`,
+          }
+          this.items.push(obj);
         }
-        this.items.push(obj);
       }
     },
     computed: {

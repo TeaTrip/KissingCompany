@@ -69,19 +69,6 @@
 			</v-container>
 		</template>
 
-		<!-- <template v-for="price in prices">
-			<v-col cols="12" md="12">
-				<v-checkbox
-					v-model="price.isWanted"
-					:label="price.label"
-					color="primary"
-					value="primary"
-					hide-details
-				></v-checkbox>
-			</v-col>
-		</template> -->
-
-
 		<v-col cols="12" md="12">
 			<div class="user-defka__buttons">
 				<v-btn class="user-defka__grid" style="grid-column: 2/3" color="error" @click="addNewService()">Выбрать время</v-btn>
@@ -139,6 +126,15 @@
 				type="warning"
 			>
 				Выберите время и услугу
+			</v-alert>
+		</v-container>
+		<v-container>
+			<v-alert
+				v-if="isDateLessNow"
+				dense
+				type="warning"
+			>
+				Время не может быть меньше текущего
 			</v-alert>
 		</v-container>
 		<comments :girlId="girlId" />
@@ -272,7 +268,7 @@
 					if(price.girlId == id){
 						const obj = {
 							isWanted: false,
-							label: `${price.serviceName} - ${price.cost}$`,
+							label: `${price.serviceName} - ${price.cost}₽`,
 							id: price.id,
 						}
 						this.prices.push(obj);
@@ -312,6 +308,18 @@
 					}
 				}
 				return slots;
+			},
+			isDateLessNow() {
+				if(!this.date){
+					return false;
+				}
+				let pickedDate = new Date(this.date)
+				if(this.time){
+					let [hours, minutes] = this.time.split(':');
+					pickedDate.setHours(parseInt(hours));
+				}
+				let curDate = new Date();
+				return pickedDate < curDate;
 			}
 		},
 		watch: {

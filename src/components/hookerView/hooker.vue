@@ -95,15 +95,32 @@ import Vue from 'vue'
         girlId: 0,
         avatarSrc: '',
         name: 'Венди Тестабургер',
-				activePage: 0,
     }),
     methods: {
 			selectMenuItem(index: number){
-				this.activePage = index;
+        if (index === 1) {
+          this.$router.push('/hooker/profile');
+        } else if (index === 2) {
+          this.$router.push('/hooker/schedule');
+        }
+        else if (index === 3) {
+          this.$router.push('/hooker/history');
+        }
+
 				this.drawer = false;
 			},
       logout(){
         this.$eventBus.$emit('logout');
+      }
+    },
+    computed: {
+      activePage() {
+        switch(true) {
+            case this.$route.path === '/hooker/profile': return 1;
+            case this.$route.path === '/hooker/schedule': return 2;
+            case this.$route.path === '/hooker/history': return 3;
+            default: return 0;
+        }
       }
     },
     async mounted() {

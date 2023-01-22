@@ -62,7 +62,7 @@
             <v-row align-content="center" v-for="(token,index) in tokens">
                 <div class="pimp-add-defka__links">
                     <h5>
-                        {{`${origin}/#/hooker-registration/${token.invateToken}`}}
+                        {{`${origin}/hooker-registration/${token.invateToken}`}}
                     </h5>
                     <v-btn
                         slot="append"
@@ -119,7 +119,7 @@ import Vue from 'vue'
         },
         async generate(){
             const token = await kissApi.getKissApi().getInviteLink();
-            const result = this.origin + '/#/hooker-registration/' + token.invateToken
+            const result = this.origin + '/hooker-registration/' + token.invateToken
             this.inviteLink = result
         },
         deleteLink(id: number) {

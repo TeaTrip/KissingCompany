@@ -73,24 +73,25 @@ export default Vue.extend({
             const role = response.roleName
             if(role === "USER"){
               kissApi.setRole('USER');
-              this.$router.push('/user');
+              //this.$router.push('/user');
             }
             if(role === "HOOKER"){
               kissApi.setRole('HOOKER');
-              this.$router.push('/hooker');
+              //this.$router.push('/hooker');
             }
             if(role === "ADMIN"){
               kissApi.setRole('ADMIN');
-              this.$router.push('/pimp');
+              //this.$router.push('/pimp');
             }
 
             return;
           }
           else {
+            this.$router.push('/')
             console.log('something went wrog');
           } 
       }
-      this.$router.push('/');
+      //this.$router.push('/');
     },
     logout() {
       console.log('logout from App.vue!')

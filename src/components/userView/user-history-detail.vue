@@ -67,7 +67,7 @@
                   </div>
                 </v-container>
                 <v-divider></v-divider>
-                <v-container v-if="payedChecked">
+                <v-container>
                   <p>Если вы оплатили и статус заказа не стал APPROVED, пожалуйста нажмите на кнопку</p>
                   <v-btn @click="checkPayment()">Я оплатил</v-btn>
                 </v-container>

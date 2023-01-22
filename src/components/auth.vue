@@ -63,21 +63,26 @@
           if(response.roleName){
             window.localStorage.setItem('auth', JSON.stringify(cred));
             const redirectFrom = this.$route.query.redirectFrom;
+            console.log(redirectFrom)
             if (typeof redirectFrom === 'string' && redirectFrom.startsWith('/hooker-registration')) {
+              window.localStorage.setItem('role', 'USER');
               kissApi.setRole('USER');
               this.$router.push(redirectFrom);
               return;
             }
             const role = response.roleName
             if(role === "USER"){
+              window.localStorage.setItem('role', 'USER');
               kissApi.setRole('USER');
               this.$router.push('/user');
             }
             if(role === "HOOKER"){
+              window.localStorage.setItem('role', 'HOOKER');
               kissApi.setRole('HOOKER');
               this.$router.push('/hooker');
             }
             if(role === "ADMIN"){
+              window.localStorage.setItem('role', 'ADMIN');
               kissApi.setRole('ADMIN');
               this.$router.push('/pimp');
             }

@@ -82,6 +82,7 @@
           kissApi.getKissApi().postAppFeedback(obj);
           this.selected = 0;
           this.feedback = '';
+          this.canSend = false;
         },
         async updateFeedbacks(){
           const res = await kissApi.getKissApi().getAppFeedbacks();

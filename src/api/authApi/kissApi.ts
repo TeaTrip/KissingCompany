@@ -107,6 +107,11 @@ export class KissApi extends Api {
     return response.data;
   }
 
+  public async deletePrice(id: number): Promise<any> {
+    let response: AxiosResponse<any[]> = await this.delete<any[]>(`/price_list/${id}`).catch((error: AxiosError) => { throw error });
+    return response.data;
+  }
+
   //services
   public async getAllServicesForDefkaById(id: number): Promise<any[]> {
     let response: AxiosResponse<any[]> = await this.get<any[]>(`/service_history/get_all_for_girl/${id}`).catch((error: AxiosError) => { throw error });
@@ -243,7 +248,15 @@ export class KissApiInstance {
   private role: string;
   constructor(config: any){
     this.kissApi = new KissApi(config);
-    this.role = 'UNAUTH';
+    console.log(window.localStorage.getItem('role'));
+    let prevRole = window.localStorage.getItem('role');
+    console.log('prevRole', prevRole);
+    if(prevRole){
+      this.role = prevRole;
+    }else{
+      window.localStorage.setItem('role', 'UNAUTH')
+      this.role = 'UNAUTH';
+    }
     this.defaultConfig = config;
   }
 
@@ -257,6 +270,7 @@ export class KissApiInstance {
 
   public logout(){
     window.localStorage.removeItem('auth');
+    window.localStorage.setItem('role', 'UNAUTH')
     this.role = 'UNAUTH';
     this.kissApi = new KissApi(this.defaultConfig);
   }
