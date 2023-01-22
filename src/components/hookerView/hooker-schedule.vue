@@ -74,7 +74,8 @@
       const defka = await kissApi.getKissApi().getGirlSelf();
       const service = await kissApi.getKissApi().getAllServicesForDefkaById(defka.id);
       for(const info of service){
-        if(info.status !== 'APPROVED' && info.status !== 'ENDED'){
+        if(info.status !== 'CREATED' && info.status !== 'ENDED'){
+          console.log('is this pushed?')
           const [price, user] = await Promise.all([
             kissApi.getKissApi().getPriceById(info.serviceId),
             kissApi.getKissApi().getUserByUsername(info.username)
@@ -113,7 +114,7 @@
             return this.items.filter(item => {
               const itemDate = new Date(item.timestamp);
               const today = new Date();
-              const startWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+              const startWeek = new Date();
               const endWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
               return itemDate >= startWeek && itemDate <= endWeek;
             });
