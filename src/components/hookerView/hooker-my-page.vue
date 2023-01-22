@@ -56,7 +56,7 @@
             <v-img :height="500" :width="400" contain :src="photo.src"></v-img>
           </v-carousel-item>
         </v-carousel>
-        <v-col cols="12" md="12" >
+        <v-col cols="12" md="12" v-if="role === 'HOOKER'">
           <v-file-input
             accept="image/*"
             v-model="avatar"
@@ -65,7 +65,7 @@
             prepend-icon="mdi-camera"
           ></v-file-input>
         </v-col>
-        <v-col cols="12" md="12">
+        <v-col cols="12" md="12" v-if="role === 'HOOKER'">
             <v-file-input
               v-model="photosToUpload"
               accept="image/*"
@@ -113,6 +113,7 @@ import { BlobOptions } from 'buffer';
         prices: [] as {isNew: boolean, label: string, id: number, cost: number}[],
         photos: [] as {src: string}[],
         photosToUpload: [],
+        role: 'HOOKER',
     }),
     methods: {
       deletePrice(index: number) {
@@ -162,7 +163,7 @@ import { BlobOptions } from 'buffer';
           kissApi.getKissApi().deletePrice(id);
         }
 
-        if(this.avatar){
+        if(this.avatar && this.role === 'HOOKER'){
           let photos = await kissApi.getKissApi().getGirlPhotosById(this.girlId, true);
           if(photos.length){
             await kissApi.getKissApi().deletePhotoById(photos[0].id);
@@ -176,7 +177,7 @@ import { BlobOptions } from 'buffer';
           }
           this.$emit('updateAvatar', this.avatarSrc);
         }
-        if(this.photosToUpload.length){
+        if(this.photosToUpload.length && this.role === 'HOOKER'){
           for(const photo of this.photosToUpload){
             const formData = new FormData();
             formData.append('image', photo)
@@ -197,6 +198,7 @@ import { BlobOptions } from 'buffer';
       }
     },
     async mounted(){
+      this.role = kissApi.getRole();
       let id = 0;
       if(this.$route.params.id){
         id = parseInt(this.$route.params.id);
