@@ -45,6 +45,7 @@
           md="12"
         >
 				<v-file-input
+				  v-model="avatar"
 					accept="image/*"
 					placeholder="Аватар профиля"
 					prepend-icon="mdi-camera"
@@ -241,7 +242,7 @@
     },
     name: 'hookerRegistration',
     data: () => ({
-		avatar: '',
+		avatar: null,
 		password: '',
 		age: '',
 		nation: '',
