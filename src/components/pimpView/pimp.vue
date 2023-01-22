@@ -68,7 +68,6 @@
 			<pimp-add-defka v-if="activePage == 1" />
 			<pimp-all-defki v-if="activePage == 2" @openDefka="open($event)"/>
       <hooker-my-page v-if="activePage == 3"/>
-			<pimp-statistics v-if="activePage == 4" />
 		</v-container>
     </div>
 </template>
@@ -94,7 +93,6 @@
         drawer: false,
         group: null,
         name: 'Баттерс сточ',
-				activePage: 0,
         defkaProps: {},
     }),
     methods: {
@@ -103,10 +101,8 @@
       },
       selectMenuItem(val: number){
         if (val === 1) {
-          this.activePage = 1;
           this.$router.push('/pimp/invite');
         } else if (val === 2) {
-          this.activePage = 2;
           this.$router.push('/pimp/girls');
         }
 				this.drawer = false;
@@ -114,9 +110,18 @@
       open(e: any){
         this.defkaProps = {src: e.src, title: e.title};
         this.$router.push(`/pimp/girls/${e.id}`);
-        this.activePage = 3;
         console.log(e, e.src, e.title);
       },
+    },
+    computed: {
+      activePage() {
+        switch(true) {
+            case this.$route.path === '/pimp/invite': return 1;
+            case this.$route.path === '/pimp/girls': return 2;
+            case /\/pimp\/girls\/\d+/.test(this.$route.path): return 3;
+            default: return 0;
+        }
+      }
     }
   })
 </script>
