@@ -74,17 +74,17 @@
             if(role === "USER"){
               window.localStorage.setItem('role', 'USER');
               kissApi.setRole('USER');
-              this.$router.push('/user');
+              this.$router.push('/user/girls');
             }
             if(role === "HOOKER"){
               window.localStorage.setItem('role', 'HOOKER');
               kissApi.setRole('HOOKER');
-              this.$router.push('/hooker');
+              this.$router.push('/hooker/schedule');
             }
             if(role === "ADMIN"){
               window.localStorage.setItem('role', 'ADMIN');
               kissApi.setRole('ADMIN');
-              this.$router.push('/pimp');
+              this.$router.push('/pimp/girls');
             }
             return;
           }

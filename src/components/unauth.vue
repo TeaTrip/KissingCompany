@@ -17,7 +17,7 @@ export default Vue.extend({
   }),
   methods: {
     goToMain(){
-      this.$router.push('/').catch(() => {});;
+      this.$router.push('/').catch(() => {});
     }
   }
 });

@@ -131,15 +131,15 @@ router.beforeEach((to, from, next) => {
   const userRole = kissApi.getRole(); 
 
   if(to.path === '/' && userRole === 'USER'){
-    next({path: '/user'});
+    next({path: '/user/girls'});
     return;
   }
   if(to.path === '/' && userRole === 'PIMP'){
-    next({path: '/pimp'});
+    next({path: '/pimp/girls'});
     return;
   }
   if(to.path === '/' && userRole === 'HOOKER'){
-    next({path: '/hooker'});
+    next({path: '/hooker/schedule'});
     return;
   }
 
